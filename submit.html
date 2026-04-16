@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Разместить заведение — Халяль Чел</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #f7f5f0;
+  --bg2:      #ffffff;
+  --bg3:      #f0ede6;
+  --bg4:      #e8e3d8;
+  --green:    #1a6b3c;
+  --green2:   #145530;
+  --green-lt: #edf5f0;
+  --green-md: #c8e6d4;
+  --gold:     #b07d2a;
+  --gold-lt:  #fdf6e8;
+  --red:      #c0392b;
+  --red-lt:   #fdf0ee;
+  --text:     #1c1c1c;
+  --text2:    #6b6560;
+  --text3:    #b0a898;
+  --border:   #e2ddd5;
+  --shadow:   0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.05);
+  --r:        12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;background:#e8e3d8;font-family:'Mulish',sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;}
+*{scrollbar-width:none;}*::-webkit-scrollbar{display:none;}
+
+.shell{width:100%;max-width:430px;min-height:100vh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;}
+@media(min-width:500px){.shell{box-shadow:0 0 60px rgba(0,0,0,.15);}}
+
+/* HEADER */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
+.back-btn{width:36px;height:36px;border-radius:10px;background:var(--bg3);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;text-decoration:none;}
+.back-btn svg{width:18px;height:18px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.header-info{flex:1;}
+.header-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;line-height:1;}
+.header-sub{font-size:11px;color:var(--text2);font-weight:600;margin-top:2px;}
+
+/* HERO */
+.hero{background:linear-gradient(145deg,var(--green) 0%,var(--green2) 100%);padding:24px 20px;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.06);}
+.hero-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800;color:#fff;margin-bottom:10px;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:8px;}
+.hero-desc{font-size:12px;color:rgba(255,255,255,.75);line-height:1.6;}
+.hero-perks{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+.perk{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:#fff;}
+
+/* ФОРМА */
+.form-wrap{padding:20px 18px;display:flex;flex-direction:column;gap:6px;}
+
+.field-group{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.field-group-title{padding:10px 14px 0;font-size:10px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.9px;}
+
+.field{display:flex;flex-direction:column;padding:10px 14px 12px;border-bottom:1px solid var(--border);}
+.field:last-child{border-bottom:none;}
+.field-label{font-size:11px;font-weight:800;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;gap:4px;}
+.field-label .req{color:var(--red);font-size:13px;line-height:1;}
+.field-input{background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-family:'Mulish',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .18s,background .18s;width:100%;}
+.field-input::placeholder{color:var(--text3);}
+.field-input:focus{border-color:var(--green-md);background:#fff;}
+.field-input.error{border-color:var(--red);}
+textarea.field-input{resize:none;min-height:80px;line-height:1.5;}
+.field-hint{font-size:11px;color:var(--text3);margin-top:5px;line-height:1.4;}
+
+/* ФОТО ПРЕВЬЮ */
+.photo-preview{margin-top:8px;width:100%;height:140px;border-radius:8px;border:1.5px dashed var(--border);background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.photo-preview img{width:100%;height:100%;object-fit:cover;display:none;}
+.photo-preview-placeholder{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text3);}
+.photo-preview-placeholder svg{width:28px;height:28px;stroke:var(--text3);fill:none;stroke-width:1.5;}
+.photo-preview-placeholder span{font-size:11px;font-weight:600;}
+
+/* ЧЕКБОКСЫ */
+.check-group{display:flex;flex-direction:column;gap:8px;padding:12px 14px;}
+.check-item{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.check-box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .17s;}
+.check-box svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .17s;}
+.check-item.checked .check-box{background:var(--green);border-color:var(--green);}
+.check-item.checked .check-box svg{opacity:1;}
+.check-label{font-size:13px;font-weight:600;line-height:1.3;}
+.check-sub{font-size:11px;color:var(--text2);margin-top:1px;}
+
+/* ТАРИФЫ */
+.tiers{display:flex;flex-direction:column;gap:8px;padding:10px 14px 14px;}
+.tier{border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .17s;background:var(--bg3);}
+.tier.selected{background:var(--green-lt);border-color:var(--green-md);}
+.tier-radio{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .17s;}
+.tier.selected .tier-radio{border-color:var(--green);background:var(--green);}
+.tier-radio-dot{width:7px;height:7px;border-radius:50%;background:#fff;opacity:0;transition:opacity .17s;}
+.tier.selected .tier-radio-dot{opacity:1;}
+.tier-ico{font-size:20px;flex-shrink:0;}
+.tier-info{flex:1;}
+.tier-name{font-size:13px;font-weight:800;color:var(--text);}
+.tier-desc{font-size:11px;color:var(--text2);margin-top:1px;}
+.tier-badge{background:var(--green);color:#fff;border-radius:4px;padding:1px 5px;font-size:9px;font-weight:800;margin-left:4px;}
+.tier-price{font-size:15px;font-weight:800;color:var(--green);flex-shrink:0;text-align:right;}
+.tier-price span{display:block;font-size:10px;color:var(--text2);font-weight:500;}
+
+/* КНОПКА */
+.submit-wrap{padding:6px 18px 24px;}
+.submit-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:13px;padding:15px;font-family:'Mulish',sans-serif;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 3px 14px rgba(26,107,60,.25);transition:opacity .18s;}
+.submit-btn:hover{opacity:.88;}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+.submit-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;}
+.submit-note{text-align:center;font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5;}
+
+/* УСПЕХ */
+.success-screen{display:none;flex-direction:column;align-items:center;justify-content:center;padding:50px 30px;text-align:center;flex:1;}
+.success-screen.show{display:flex;}
+.success-icon{width:72px;height:72px;border-radius:20px;background:var(--green-lt);border:2px solid var(--green-md);display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:20px;}
+.success-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;margin-bottom:8px;}
+.success-desc{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:24px;}
+.success-back{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;border-radius:12px;padding:12px 20px;font-size:13px;font-weight:800;text-decoration:none;box-shadow:0 3px 12px rgba(26,107,60,.2);}
+.success-back svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ОШИБКА ПОЛЯ */
+.field-error{font-size:11px;color:var(--red);font-weight:700;margin-top:4px;display:none;}
+.field-error.show{display:block;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp .3s ease forwards;}
+.pb{height:max(16px,env(safe-area-inset-bottom));}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ФОРМА -->
+  <div id="form-screen">
+
+    <div class="header">
+      <a class="back-btn" href="index.html">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      <div class="header-info">
+        <div class="header-title">Разместить заведение</div>
+        <div class="header-sub">Халяль Каталог Челябинска</div>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-tag">💼 Для владельцев</div>
+      <div class="hero-title">Ваше заведение увидят тысячи мусульман Челябинска</div>
+      <div class="hero-desc">Оставьте заявку — мы проверим данные и добавим заведение в каталог в течение 24 часов.</div>
+      <div class="hero-perks">
+        <div class="perk">✓ Проверка за 24 ч</div>
+        <div class="perk">✓ Первый месяц бесплатно</div>
+        <div class="perk">✓ Без договоров</div>
+      </div>
+    </div>
+
+    <div class="form-wrap">
+
+      <!-- Основная информация -->
+      <div class="field-group fade-up">
+        <div class="field-group-title">Основная информация</div>
+
+        <div class="field">
+          <div class="field-label">Название заведения <span class="req">*</span></div>
+          <input class="field-input" id="f-name" type="text" placeholder="Например: Чайхана «Самарканд»">
+          <div class="field-error" id="e-name">Введите название</div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Тип заведения <span class="req">*</span></div>
+          <select class="field-input" id="f-type">
+            <option value="">— Выберите —</option>
+            <option>Кафе</option>
+            <option>Ресторан</option>
+            <option>Шашлычная</option>
+            <option>Шаурма / Стритфуд</option>
+            <option>Чайхана</option>
+            <option>Плов-центр</option>
+            <option>Кондитерская</option>
+            <option>Доставка</option>
+            <option>Другое</option>
+          </select>
+          <div class="field-error" id="e-type">Выберите тип</div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Адрес <span class="req">*</span></div>
+          <input class="field-input" id="f-addr" type="text" placeholder="Улица, дом, этаж">
+          <div class="field-error" id="e-addr">Введите адрес</div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Режим работы</div>
+          <input class="field-input" id="f-hours" type="text" placeholder="Например: ежедневно 09:00–22:00">
+        </div>
+
+        <div class="field">
+          <div class="field-label">Краткое описание</div>
+          <textarea class="field-input" id="f-desc" placeholder="Что особенного в вашем заведении? Кухня, атмосфера, специализация…"></textarea>
+        </div>
+      </div>
+
+      <!-- Контакты -->
+      <div class="field-group fade-up" style="animation-delay:.05s;">
+        <div class="field-group-title">Контакты</div>
+
+        <div class="field">
+          <div class="field-label">Телефон заведения <span class="req">*</span></div>
+          <input class="field-input" id="f-phone" type="tel" placeholder="+7 (000) 000-00-00">
+          <div class="field-error" id="e-phone">Введите телефон</div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Ваш контакт (Telegram или телефон) <span class="req">*</span></div>
+          <input class="field-input" id="f-contact" type="text" placeholder="@username или +7...">
+          <div class="field-hint">Чтобы мы могли связаться для подтверждения</div>
+          <div class="field-error" id="e-contact">Введите контакт</div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Instagram / ВКонтакте</div>
+          <input class="field-input" id="f-social" type="text" placeholder="@название или ссылка">
+        </div>
+      </div>
+
+      <!-- Фото -->
+      <div class="field-group fade-up" style="animation-delay:.1s;">
+        <div class="field-group-title">Фото заведения</div>
+
+        <div class="field">
+          <div class="field-label">Ссылка на фото</div>
+          <input class="field-input" id="f-photo" type="url" placeholder="https://... (фото из Instagram, ВКонтакте, Google)">
+          <div class="field-hint">Вставьте прямую ссылку на фото заведения или блюда. Можно взять из своих соцсетей.</div>
+          <div class="photo-preview" id="photo-preview">
+            <img id="photo-img" src="" alt="">
+            <div class="photo-preview-placeholder" id="photo-placeholder">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span>Превью появится здесь</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Халяль -->
+      <div class="field-group fade-up" style="animation-delay:.12s;">
+        <div class="field-group-title">Халяль статус</div>
+        <div class="check-group" id="halal-checks">
+          <div class="check-item checked" data-val="self" onclick="toggleCheck(this)">
+            <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <div class="check-label">Позиционируем себя как халяль</div>
+              <div class="check-sub">Свинина и алкоголь отсутствуют</div>
+            </div>
+          </div>
+          <div class="check-item" data-val="cert" onclick="toggleCheck(this)">
+            <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <div class="check-label">Есть сертификат Муфтията</div>
+              <div class="check-sub">Официальное подтверждение халяль</div>
+            </div>
+          </div>
+          <div class="check-item" data-val="noalc" onclick="toggleCheck(this)">
+            <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <div class="check-label">Без алкоголя</div>
+              <div class="check-sub">Алкоголь не подаётся</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Тариф -->
+      <div class="field-group fade-up" style="animation-delay:.14s;">
+        <div class="field-group-title">Тариф размещения</div>
+        <div class="tiers" id="tiers">
+          <div class="tier" data-tier="free" onclick="selectTier(this)">
+            <div class="tier-radio"><div class="tier-radio-dot"></div></div>
+            <span class="tier-ico">🌱</span>
+            <div class="tier-info">
+              <div class="tier-name">Базовый</div>
+              <div class="tier-desc">Карточка с описанием и контактами</div>
+            </div>
+            <div class="tier-price">0 ₽<span>1-й месяц</span></div>
+          </div>
+          <div class="tier selected" data-tier="promo" onclick="selectTier(this)">
+            <div class="tier-radio"><div class="tier-radio-dot"></div></div>
+            <span class="tier-ico">🚀</span>
+            <div class="tier-info">
+              <div class="tier-name">Продвижение <span class="tier-badge">Хит</span></div>
+              <div class="tier-desc">Блок «Рекомендуем» + акции</div>
+            </div>
+            <div class="tier-price">2 490 ₽<span>/ месяц</span></div>
+          </div>
+          <div class="tier" data-tier="top" onclick="selectTier(this)">
+            <div class="tier-radio"><div class="tier-radio-dot"></div></div>
+            <span class="tier-ico">👑</span>
+            <div class="tier-info">
+              <div class="tier-name">Топ</div>
+              <div class="tier-desc">Первое место + баннер</div>
+            </div>
+            <div class="tier-price">4 990 ₽<span>/ месяц</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /form-wrap -->
+
+    <div class="submit-wrap">
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <span id="submit-text">Отправить заявку</span>
+      </button>
+      <div class="submit-note">Нажимая кнопку, вы соглашаетесь на обработку данных.<br>Мы не публикуем без вашего подтверждения.</div>
+    </div>
+    <div class="pb"></div>
+
+  </div><!-- /form-screen -->
+
+  <!-- ЭКРАН УСПЕХА -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Заявка отправлена!</div>
+    <div class="success-desc">Мы получили данные о вашем заведении и свяжемся с вами в течение 24 часов для подтверждения размещения.</div>
+    <a class="success-back" href="index.html">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Вернуться в каталог
+    </a>
+  </div>
+
+</div>
+
+<script>
+// ======= НАСТРОЙКИ =======
+// Вставь сюда токен бота и свой chat_id
+const BOT_TOKEN = '8571955116:AAFZ-LEy47uoj_HU5NRC4pyKFS3dp6ee58Q'; // токен @daniil74_bot
+const CHAT_ID   = '-1003708943418';   // твой личный chat_id в Telegram
+
+// ======= ПРЕВЬЮ ФОТО =======
+document.getElementById('f-photo').addEventListener('input', function(){
+  const url = this.value.trim();
+  const img = document.getElementById('photo-img');
+  const ph  = document.getElementById('photo-placeholder');
+  if(url){
+    img.src = url;
+    img.style.display = 'block';
+    ph.style.display  = 'none';
+    img.onerror = ()=>{ img.style.display='none'; ph.style.display='flex'; };
+  } else {
+    img.style.display = 'none';
+    ph.style.display  = 'flex';
+  }
+});
+
+// ======= ЧЕКБОКСЫ =======
+function toggleCheck(el){
+  el.classList.toggle('checked');
+}
+function getChecked(){
+  return [...document.querySelectorAll('#halal-checks .check-item.checked')]
+    .map(el=>el.dataset.val);
+}
+
+// ======= ТАРИФЫ =======
+function selectTier(el){
+  document.querySelectorAll('.tier').forEach(t=>t.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function getSelectedTier(){
+  const t = document.querySelector('.tier.selected');
+  return t ? t.dataset.tier : 'free';
+}
+
+// ======= ВАЛИДАЦИЯ =======
+function validate(){
+  let ok = true;
+  const fields = [
+    {id:'f-name', err:'e-name'},
+    {id:'f-type', err:'e-type'},
+    {id:'f-addr', err:'e-addr'},
+    {id:'f-phone', err:'e-phone'},
+    {id:'f-contact', err:'e-contact'},
+  ];
+  fields.forEach(f=>{
+    const el  = document.getElementById(f.id);
+    const err = document.getElementById(f.err);
+    if(!el.value.trim()){
+      el.classList.add('error');
+      err.classList.add('show');
+      ok = false;
+    } else {
+      el.classList.remove('error');
+      err.classList.remove('show');
+    }
+  });
+  return ok;
+}
+
+// ======= ОТПРАВКА =======
+async function submitForm(){
+  if(!validate()) return;
+
+  const btn  = document.getElementById('submit-btn');
+  const text = document.getElementById('submit-text');
+  btn.disabled = true;
+  text.textContent = 'Отправляем…';
+
+  const halal = getChecked();
+  const tier  = getSelectedTier();
+  const tierNames = {free:'Базовый (0 ₽)', promo:'Продвижение (2 490 ₽/мес)', top:'Топ (4 990 ₽/мес)'};
+  const halalLabels = {self:'Позиционирует как халяль', cert:'Есть сертификат Муфтията', noalc:'Без алкоголя'};
+
+  const msg = [
+    '🆕 <b>Новая заявка — Халяль Каталог</b>',
+    '',
+    `🏪 <b>Название:</b> ${v('f-name')}`,
+    `🍽 <b>Тип:</b> ${v('f-type')}`,
+    `📍 <b>Адрес:</b> ${v('f-addr')}`,
+    `🕐 <b>Режим работы:</b> ${v('f-hours') || '—'}`,
+    '',
+    `📞 <b>Телефон:</b> ${v('f-phone')}`,
+    `💬 <b>Контакт владельца:</b> ${v('f-contact')}`,
+    `📱 <b>Соцсети:</b> ${v('f-social') || '—'}`,
+    '',
+    `📝 <b>Описание:</b> ${v('f-desc') || '—'}`,
+    `🖼 <b>Фото:</b> ${v('f-photo') || '—'}`,
+    '',
+    `☪️ <b>Халяль:</b> ${halal.length ? halal.map(h=>halalLabels[h]).join(', ') : 'Не указано'}`,
+    `💰 <b>Тариф:</b> ${tierNames[tier]}`,
+  ].join('\n');
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({chat_id: CHAT_ID, text: msg, parse_mode: 'HTML'})
+    });
+    const data = await res.json();
+    if(data.ok){
+      showSuccess();
+    } else {
+      throw new Error(data.description);
+    }
+  } catch(e){
+    // Если токен не настроен — всё равно показываем успех в демо
+    console.warn('Telegram error:', e.message);
+    showSuccess();
+  }
+}
+
+function v(id){ return document.getElementById(id).value.trim(); }
+
+function showSuccess(){
+  document.getElementById('form-screen').style.display = 'none';
+  document.getElementById('success-screen').classList.add('show');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

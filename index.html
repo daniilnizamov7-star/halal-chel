@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Халяль Чел — Каталог заведений Челябинска</title>
-<meta name="theme-color" content="#0a1f0e">
+<meta name="theme-color" content="#1a4d2e">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <meta name="description" content="Лучший гид по халяль-заведениям Челябинска. Рестораны, кафе, шаурма — только проверенное.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -479,6 +481,118 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
 
 .pb-safe{height:max(28px,env(safe-area-inset-bottom));flex-shrink:0;}
 
+/* ── ADMIN ── */
+.screen-admin{
+  position:fixed;inset:0;max-width:430px;margin:0 auto;
+  background:var(--bg);z-index:300;overflow:hidden;display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);
+}
+.screen-admin.open{transform:translateY(0);}
+.admin-header{
+  background:var(--forest2);padding:14px 20px 14px;
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
+}
+.admin-back{
+  width:38px;height:38px;border-radius:11px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+}
+.admin-back svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.admin-header-info{flex:1;}
+.admin-header-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#fff;}
+.admin-header-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:1px;}
+.admin-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;}
+.admin-tab{
+  flex:1;padding:11px 6px;text-align:center;font-size:12px;font-weight:800;
+  color:var(--ink3);cursor:pointer;border-bottom:2.5px solid transparent;
+  transition:all .17s;position:relative;
+}
+.admin-tab.active{color:var(--forest);border-bottom-color:var(--forest);}
+.admin-tab-badge{
+  position:absolute;top:8px;right:calc(50% - 22px);
+  background:var(--red);color:#fff;border-radius:8px;
+  padding:1px 5px;font-size:9px;font-weight:800;min-width:16px;
+}
+.admin-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.admin-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 32px;text-align:center;}
+.admin-empty-ico{font-size:52px;margin-bottom:14px;opacity:.3;}
+.admin-empty-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:6px;}
+.admin-empty-desc{font-size:13px;color:var(--ink2);line-height:1.6;}
+
+/* КАРТОЧКА ЗАЯВКИ */
+.app-card{
+  background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:var(--r);margin:12px 16px 0;overflow:hidden;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.app-card-head{padding:14px 16px 10px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.app-card-name{font-size:15px;font-weight:800;line-height:1.3;}
+.app-card-cat{font-size:11px;color:var(--ink3);font-weight:600;margin-top:2px;}
+.app-status{border-radius:7px;padding:4px 10px;font-size:11px;font-weight:800;flex-shrink:0;}
+.st-new{background:#fff3cd;color:#856404;}
+.st-approved{background:var(--forest-lt);color:var(--forest);}
+.st-rejected{background:var(--red-lt);color:var(--red);}
+.app-card-body{padding:0 16px 12px;display:flex;flex-direction:column;gap:5px;}
+.app-row{display:flex;align-items:flex-start;gap:7px;font-size:12px;}
+.app-row-label{color:var(--ink3);font-weight:700;min-width:60px;flex-shrink:0;}
+.app-row-val{color:var(--ink);font-weight:600;line-height:1.5;}
+.app-tier{display:inline-flex;align-items:center;gap:4px;background:var(--gold-lt);color:var(--gold);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800;}
+.app-date{font-size:10px;color:var(--ink3);padding:0 16px 10px;}
+.app-actions{display:flex;gap:8px;padding:10px 16px 14px;border-top:1px solid var(--border);}
+.app-btn{
+  flex:1;border:none;border-radius:10px;padding:10px 8px;
+  font-family:'Manrope',sans-serif;font-size:12px;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:opacity .17s,transform .15s;
+}
+.app-btn:active{transform:scale(.97);}
+.app-btn svg{width:13px;height:13px;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+.btn-approve{background:var(--forest);color:#fff;}
+.btn-reject{background:var(--red-lt);color:var(--red);}
+.btn-approved-done{background:var(--forest-lt);color:var(--forest);cursor:default;}
+.btn-rejected-done{background:var(--bg3);color:var(--ink3);cursor:default;}
+
+/* ЭКРАН ЛОГИНА */
+.admin-login{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:40px 32px;
+}
+.admin-login-ico{
+  width:72px;height:72px;border-radius:22px;background:var(--forest);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:22px;box-shadow:0 4px 20px rgba(26,77,46,.3);
+}
+.admin-login-ico svg{width:34px;height:34px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;}
+.admin-login-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:6px;text-align:center;}
+.admin-login-sub{font-size:13px;color:var(--ink2);text-align:center;margin-bottom:28px;line-height:1.6;}
+.admin-pw-wrap{width:100%;position:relative;margin-bottom:14px;}
+.admin-pw-input{
+  width:100%;background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:13px;padding:14px 46px 14px 16px;
+  font-family:'Manrope',sans-serif;font-size:16px;color:var(--ink);
+  outline:none;transition:border-color .2s;text-align:center;letter-spacing:3px;
+}
+.admin-pw-input:focus{border-color:var(--forest-md);}
+.admin-pw-input.error{border-color:var(--red);animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.admin-pw-toggle{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+}
+.admin-pw-toggle svg{width:17px;height:17px;stroke:var(--ink3);fill:none;stroke-width:2;stroke-linecap:round;}
+.admin-login-btn{
+  width:100%;background:var(--forest);color:#fff;
+  border:none;border-radius:13px;padding:15px;
+  font-family:'Manrope',sans-serif;font-size:14px;font-weight:800;
+  cursor:pointer;box-shadow:0 3px 14px rgba(26,77,46,.3);
+  transition:opacity .17s;
+}
+.admin-login-btn:hover{opacity:.9;}
+.admin-login-hint{font-size:11px;color:var(--ink3);margin-top:12px;text-align:center;}
+
+/* Скрытая кнопка входа в админку — тап 5 раз по логотипу */
+.admin-trigger{position:absolute;top:0;left:0;width:60px;height:60px;opacity:0;cursor:default;z-index:200;}
+
 /* ВЕРИФИКАЦИЯ Badge */
 .verified-badge{
   display:inline-flex;align-items:center;gap:4px;
@@ -818,8 +932,11 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
 </div>
 
 <script>
-const TGGROUP = '-1003708943418';
-const TGTOKEN = ''; // заполнить при деплое
+// MAX Messenger — работает без VPN в России
+// 1. Найди @MaxBotsFather в MAX → создай бота → скопируй токен
+// 2. Узнай chat_id: добавь бота в чат → GET https://platform-api.max.ru/chats (Authorization: <token>)
+const MAX_TOKEN = ''; // токен бота из @MaxBotsFather
+const MAX_CHAT_ID = 0; // chat_id чата/группы куда слать заявки
 
 const places = [
   {id:1,emoji:'🏛️',name:'Арслан',cat:'Ресторан',rating:4.8,reviews:312,hours:'10:00–23:00',addr:'Свердловский пр., 60',phone:'+7 (351) 200-25-25',social:'@arslan_chel',desc:'Один из лучших восточных ресторанов Челябинска. Узбекская кухня, живая музыка по пятницам, большой зал для торжеств.',featured:true,promo:'🎵 Живая музыка',verified:true},
@@ -1100,10 +1217,11 @@ async function submitForm(){
   btn.textContent='Отправляем…';btn.disabled=true;
 
   try{
-    if(TGTOKEN){
-      await fetch(`https://api.telegram.org/bot${TGTOKEN}/sendMessage`,{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({chat_id:TGGROUP,text:msg,parse_mode:'Markdown'})
+    if(MAX_TOKEN && MAX_CHAT_ID){
+      await fetch('https://platform-api.max.ru/messages?chat_id='+MAX_CHAT_ID,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':MAX_TOKEN},
+        body:JSON.stringify({text:msg,format:'markdown'})
       });
     }
     btn.innerHTML='<svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round"><polyline points="20 6 9 17 4 12"/></svg> Заявка отправлена!';
@@ -1113,6 +1231,26 @@ async function submitForm(){
     btn.innerHTML='Отправить заявку';btn.disabled=false;
     showToast('Ошибка. Позвоните нам: +7 951 448-96-66','⚠️');
   }
+}
+
+// ── SW РЕГИСТРАЦИЯ + БАННЕР ОБНОВЛЕНИЯ ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    reg.update();
+    reg.addEventListener('updatefound', () => {
+      const nw = reg.installing;
+      nw.addEventListener('statechange', () => {
+        if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+          const banner = document.createElement('div');
+          banner.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#fff;border-radius:12px;padding:11px 18px;font-size:13px;font-weight:800;z-index:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);white-space:nowrap;';
+          banner.textContent = '🔄 Обновить приложение';
+          banner.onclick = () => { nw.postMessage({type:'SKIP_WAITING'}); };
+          document.body.appendChild(banner);
+        }
+      });
+    });
+  });
+  navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
 }
 
 // ── ANDROID BACK ──
@@ -1126,6 +1264,302 @@ document.getElementById('screen-detail').addEventListener('transitionstart',()=>
 });
 document.getElementById('screen-submit').addEventListener('transitionstart',()=>{
   if(document.getElementById('screen-submit').classList.contains('open'))history.pushState({},'','');
+});
+</script>
+
+<!-- ════════════════ ADMIN SCREEN ════════════════ -->
+<div class="screen-admin" id="screen-admin">
+
+  <!-- ЛОГИН -->
+  <div id="admin-login-screen" style="display:flex;flex-direction:column;flex:1;">
+    <div class="admin-header">
+      <div class="admin-back" onclick="closeAdmin()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="admin-header-info">
+        <div class="admin-header-title">Панель управления</div>
+        <div class="admin-header-sub">Халяль Чел</div>
+      </div>
+    </div>
+    <div class="admin-login">
+      <div class="admin-login-ico">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="admin-login-title">Вход для администратора</div>
+      <div class="admin-login-sub">Введите пароль для доступа<br>к заявкам заведений</div>
+      <div class="admin-pw-wrap">
+        <input class="admin-pw-input" type="password" id="admin-pw" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter')checkAdminPw()">
+        <div class="admin-pw-toggle" onclick="togglePw()">
+          <svg id="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+      <button class="admin-login-btn" onclick="checkAdminPw()">Войти</button>
+      <div class="admin-login-hint">Пароль задаётся в коде — строка ADMIN_PASS</div>
+    </div>
+  </div>
+
+  <!-- ПАНЕЛЬ ЗАЯВОК -->
+  <div id="admin-panel" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+    <div class="admin-header">
+      <div class="admin-back" onclick="closeAdmin()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="admin-header-info">
+        <div class="admin-header-title">Заявки заведений</div>
+        <div class="admin-header-sub" id="admin-stats-label">Загружаем…</div>
+      </div>
+      <div style="cursor:pointer;padding:6px 0 6px 6px;" onclick="loadApplications()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </div>
+    </div>
+    <div class="admin-tabs">
+      <div class="admin-tab active" data-filter="new" onclick="setAdminFilter('new')">
+        Новые <span class="admin-tab-badge" id="badge-new" style="display:none;position:static;margin-left:3px;vertical-align:1px;"></span>
+      </div>
+      <div class="admin-tab" data-filter="approved" onclick="setAdminFilter('approved')">Одобрены</div>
+      <div class="admin-tab" data-filter="rejected" onclick="setAdminFilter('rejected')">Отклонены</div>
+      <div class="admin-tab" data-filter="all" onclick="setAdminFilter('all')">Все</div>
+    </div>
+    <div class="admin-scroll" id="admin-list">
+      <div class="admin-empty"><div class="admin-empty-ico">⏳</div><div class="admin-empty-title">Загружаем…</div></div>
+    </div>
+    <div class="pb-safe"></div>
+  </div>
+</div>
+
+<!-- СКРЫТЫЙ ТРИГГЕР — 5 тапов по логотипу бренда -->
+<div id="admin-trigger" style="position:fixed;top:52px;left:16px;width:52px;height:52px;opacity:0;z-index:500;cursor:default;" onclick="adminTriggerTap()"></div>
+
+<script>
+// ════════════ ADMIN CONFIG ════════════
+const ADMIN_PASS = 'halal2024'; // ← поменяй на свой пароль
+const SB_URL = 'https://yiqipulgofoschkccaxr.supabase.co';
+const SB_KEY = ''; // ← вставь anon key из Supabase Dashboard → Settings → API
+
+// ════════════ ADMIN TRIGGER (5 тапов) ════════════
+let tapCount = 0, tapTimer = null;
+function adminTriggerTap() {
+  tapCount++;
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => tapCount = 0, 2000);
+  if (tapCount >= 5) { tapCount = 0; openAdmin(); }
+}
+
+// ════════════ ADMIN OPEN/CLOSE ════════════
+function openAdmin() {
+  document.getElementById('screen-admin').classList.add('open');
+  history.pushState({}, '', '');
+}
+function closeAdmin() {
+  document.getElementById('screen-admin').classList.remove('open');
+  // сбросить на логин при закрытии
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-login-screen').style.display = 'flex';
+  document.getElementById('admin-pw').value = '';
+}
+
+// ════════════ ЛОГИН ════════════
+function togglePw() {
+  const inp = document.getElementById('admin-pw');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+function checkAdminPw() {
+  const val = document.getElementById('admin-pw').value;
+  if (val === ADMIN_PASS) {
+    document.getElementById('admin-login-screen').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'flex';
+    loadApplications();
+  } else {
+    const inp = document.getElementById('admin-pw');
+    inp.classList.add('error');
+    inp.value = '';
+    setTimeout(() => inp.classList.remove('error'), 400);
+    showToast('Неверный пароль', '🔒');
+  }
+}
+
+// ════════════ SUPABASE FETCH ════════════
+async function sbFetch(path, opts = {}) {
+  const res = await fetch(SB_URL + '/rest/v1/' + path, {
+    ...opts,
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || '',
+      ...(opts.headers || {})
+    }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+// ════════════ ЗАГРУЗКА ЗАЯВОК ════════════
+let allApps = [], adminFilter = 'new';
+
+async function loadApplications() {
+  document.getElementById('admin-stats-label').textContent = 'Загружаем…';
+  try {
+    allApps = await sbFetch('halal_applications?order=created_at.desc&select=*');
+    renderAdminList();
+    const newCount = allApps.filter(a => a.status === 'new').length;
+    document.getElementById('admin-stats-label').textContent =
+      `Всего: ${allApps.length} · Новых: ${newCount}`;
+    const badge = document.getElementById('badge-new');
+    if (newCount > 0) { badge.style.display = 'inline'; badge.textContent = newCount; }
+    else badge.style.display = 'none';
+  } catch(e) {
+    document.getElementById('admin-stats-label').textContent = 'Ошибка загрузки';
+    document.getElementById('admin-list').innerHTML =
+      `<div class="admin-empty"><div class="admin-empty-ico">⚠️</div>
+       <div class="admin-empty-title">Ошибка</div>
+       <div class="admin-empty-desc">Проверь SB_KEY в коде.<br>${e.message}</div></div>`;
+  }
+}
+
+function setAdminFilter(f) {
+  adminFilter = f;
+  document.querySelectorAll('.admin-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.filter === f));
+  renderAdminList();
+}
+
+const tierLabel = { starter: '🌱 Старт', pro: '🚀 Продвижение', top: '👑 Топ' };
+const statusLabel = { new: 'Новая', approved: 'Одобрена', rejected: 'Отклонена' };
+const statusClass = { new: 'st-new', approved: 'st-approved', rejected: 'st-rejected' };
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('ru-RU', { day:'numeric', month:'short', year:'numeric' })
+    + ' в ' + d.toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' });
+}
+
+function renderAdminList() {
+  const filtered = adminFilter === 'all'
+    ? allApps
+    : allApps.filter(a => a.status === adminFilter);
+
+  if (!filtered.length) {
+    document.getElementById('admin-list').innerHTML =
+      `<div class="admin-empty">
+         <div class="admin-empty-ico">${adminFilter === 'new' ? '🎉' : '📭'}</div>
+         <div class="admin-empty-title">${adminFilter === 'new' ? 'Новых заявок нет' : 'Пусто'}</div>
+         <div class="admin-empty-desc">Здесь появятся заявки от владельцев заведений</div>
+       </div>`;
+    return;
+  }
+
+  document.getElementById('admin-list').innerHTML =
+    filtered.map(a => `
+      <div class="app-card" id="app-${a.id}">
+        <div class="app-card-head">
+          <div>
+            <div class="app-card-name">${a.name}</div>
+            <div class="app-card-cat">${a.category}</div>
+          </div>
+          <div class="app-status ${statusClass[a.status]}">${statusLabel[a.status]}</div>
+        </div>
+        <div class="app-card-body">
+          <div class="app-row"><span class="app-row-label">📍 Адрес</span><span class="app-row-val">${a.address}</span></div>
+          <div class="app-row"><span class="app-row-label">📞 Тел</span><span class="app-row-val"><a href="tel:${a.phone}" style="color:var(--forest)">${a.phone}</a></span></div>
+          ${a.hours ? `<div class="app-row"><span class="app-row-label">🕐 Часы</span><span class="app-row-val">${a.hours}</span></div>` : ''}
+          ${a.description ? `<div class="app-row"><span class="app-row-label">📝 Описание</span><span class="app-row-val">${a.description}</span></div>` : ''}
+          ${a.social ? `<div class="app-row"><span class="app-row-label">🌐 Соцсети</span><span class="app-row-val">${a.social}</span></div>` : ''}
+          <div class="app-row" style="margin-top:2px;"><span class="app-tier">${tierLabel[a.tier] || a.tier}</span></div>
+        </div>
+        <div class="app-date">Подана: ${formatDate(a.created_at)}</div>
+        ${a.status === 'new' ? `
+        <div class="app-actions">
+          <button class="app-btn btn-approve" onclick="updateStatus(${a.id},'approved')">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Одобрить
+          </button>
+          <button class="app-btn btn-reject" onclick="updateStatus(${a.id},'rejected')">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Отклонить
+          </button>
+        </div>` : `
+        <div class="app-actions">
+          <button class="app-btn ${a.status === 'approved' ? 'btn-approved-done' : 'btn-rejected-done'}">
+            ${a.status === 'approved' ? '✓ Одобрено' : '✕ Отклонено'}
+          </button>
+          <button class="app-btn btn-reject" style="flex:0.5;" onclick="updateStatus(${a.id},'new')">
+            <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Вернуть
+          </button>
+        </div>`}
+      </div>`).join('') + '<div style="height:20px;"></div>';
+}
+
+// ════════════ ОБНОВИТЬ СТАТУС ════════════
+async function updateStatus(id, status) {
+  try {
+    await sbFetch(`halal_applications?id=eq.${id}`, {
+      method: 'PATCH',
+      prefer: 'return=minimal',
+      body: JSON.stringify({ status })
+    });
+    const app = allApps.find(a => a.id === id);
+    if (app) app.status = status;
+    renderAdminList();
+    const msgs = { approved: '✅ Заявка одобрена', rejected: '❌ Заявка отклонена', new: '🔄 Возвращена в новые' };
+    showToast(msgs[status] || 'Обновлено', status === 'approved' ? '✅' : '🔄');
+  } catch(e) {
+    showToast('Ошибка обновления', '⚠️');
+  }
+}
+
+// ════════════ ОТПРАВКА ФОРМЫ → SUPABASE ════════════
+// Переопределяем submitForm чтобы слать в Supabase вместо MAX
+const _originalSubmit = window.submitForm;
+window.submitForm = async function() {
+  const name = document.getElementById('f-name').value.trim();
+  const cat = document.getElementById('f-cat').value;
+  const addr = document.getElementById('f-addr').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  if (!name || !cat || !addr || !phone) { showToast('Заполните обязательные поля', '⚠️'); return; }
+
+  const btn = document.querySelector('.submit-btn');
+  btn.textContent = 'Отправляем…'; btn.disabled = true;
+
+  try {
+    if (!SB_KEY) throw new Error('SB_KEY не задан');
+    await sbFetch('halal_applications', {
+      method: 'POST',
+      prefer: 'return=minimal',
+      body: JSON.stringify({
+        name,
+        category: cat,
+        address: addr,
+        phone,
+        hours: document.getElementById('f-hours').value.trim() || null,
+        description: document.getElementById('f-desc').value.trim() || null,
+        social: document.getElementById('f-social').value.trim() || null,
+        tier: selectedTier
+      })
+    });
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round"><polyline points="20 6 9 17 4 12"/></svg> Заявка отправлена!';
+    showToast('Заявка принята! Свяжемся в течение 2 часов 🤝', '✅');
+    setTimeout(() => {
+      closeSubmit();
+      btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6z"/></svg> Отправить заявку';
+      btn.disabled = false;
+    }, 2500);
+  } catch(e) {
+    btn.innerHTML = 'Отправить заявку'; btn.disabled = false;
+    showToast('Ошибка. Проверь подключение к интернету', '⚠️');
+  }
+};
+
+// Добавляем admin в popstate
+const _origPopstate = window.onpopstate;
+window.addEventListener('popstate', () => {
+  if (document.getElementById('screen-admin').classList.contains('open')) { closeAdmin(); }
+});
+document.getElementById('screen-admin').addEventListener('transitionstart', () => {
+  if (document.getElementById('screen-admin').classList.contains('open')) history.pushState({}, '', '');
 });
 </script>
 </body>

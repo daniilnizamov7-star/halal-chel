@@ -382,13 +382,24 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
       </div>
     </div>
     <div class="section"><div class="sec-hd"><span class="sec-title">Рекомендуем</span><span class="sec-link" onclick="setCat('all')">Все →</span></div><div class="featured-row" id="featured-row"><div class="loader"><div class="loader-spin"></div></div></div></div>
-    <div class="section" style="padding-top:24px;"><div class="sec-hd"><span class="sec-title">Все заведения</span><span id="count-label" class="sec-count"></span></div><div id="list-container"><div class="loader"><div class="loader-spin"></div><div class="loader-text">Загружаем заведения…</div></div></div></div>
+    <div class="section" style="padding-top:24px;"><div class="sec-hd"><span class="sec-title">Все заведения</span><span id="count-label" class="sec-count"></span></div>
+      <div style="background:var(--forest-lt);border:1.5px solid var(--forest-md);border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:9px;">
+        <span style="font-size:18px;flex-shrink:0;">👥</span>
+        <span style="font-size:12px;color:var(--forest);font-weight:600;line-height:1.5;">Место в списке определяют посетители — чем больше рекомендаций 👍, тем выше заведение</span>
+      </div><div id="list-container"><div class="loader"><div class="loader-spin"></div><div class="loader-text">Загружаем заведения…</div></div></div></div>
     <div class="section" style="padding-top:28px;">
       <div class="tiers-title">Разместите заведение</div>
-      <div class="tiers-sub">Тысячи мусульман Челябинска ищут халяль каждый день. Первый месяц — бесплатно.</div>
-      <div class="tier-card" onclick="openSubmit('starter')"><div class="tier-ico">🌱</div><div class="tier-info"><div class="tier-name">Старт</div><div class="tier-desc">Карточка, часы, контакты</div></div><div><div class="tier-price">990 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
-      <div class="tier-card featured" onclick="openSubmit('pro')"><div class="tier-ico">🚀</div><div class="tier-info"><div class="tier-name">Продвижение <span class="tier-badge">Хит</span></div><div class="tier-desc">+ блок «Рекомендуем» + акции</div></div><div><div class="tier-price">2 490 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
-      <div class="tier-card" onclick="openSubmit('top')"><div class="tier-ico">👑</div><div class="tier-info"><div class="tier-name">Топ</div><div class="tier-desc">Всё + баннер + первое место</div></div><div><div class="tier-price">4 990 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
+      <div class="tiers-sub">Тысячи мусульман Челябинска ищут халяль каждый день. Первый месяц — тариф Топ бесплатно.</div>
+      <div style="background:#fff3cd;border:1.5px solid #f0d060;border-radius:12px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;gap:9px;">
+        <span style="font-size:18px;flex-shrink:0;">⏳</span>
+        <div>
+          <div style="font-size:12px;font-weight:800;color:#856404;">Цены действительны до 1 сентября 2026</div>
+          <div style="font-size:11px;color:#856404;opacity:.8;margin-top:2px;">Действующие клиенты сохраняют свою цену навсегда</div>
+        </div>
+      </div>
+      <div class="tier-card" onclick="openSubmit('starter')"><div class="tier-ico">🌱</div><div class="tier-info"><div class="tier-name">Старт</div><div class="tier-desc">Карточка, адрес, телефон, часы, часы</div></div><div><div class="tier-price">490 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
+
+      <div class="tier-card" onclick="openSubmit('top')"><div class="tier-ico">👑</div><div class="tier-info"><div class="tier-name">Топ</div><div class="tier-desc">Топ списка + Рекомендуем + акции</div></div><div><div class="tier-price">4 490 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
     </div>
     <div style="text-align:center;padding:16px 0 6px;"><button id="admin-dot-btn" onclick="openAdmin()" style="width:28px;height:28px;border-radius:50%;border:none;background:var(--bg4);opacity:0.3;cursor:pointer;font-size:0;" aria-label="admin">·</button></div>
     <div class="pb-safe"></div>
@@ -426,7 +437,7 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
 <div class="screen-submit" id="screen-submit">
   <div class="sub-header"><div class="sub-back" onclick="closeSubmit()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><span class="sub-header-title">Разместить заведение</span></div>
   <div class="sub-body">
-    <div style="background:var(--forest-lt);border:1.5px solid var(--forest-md);border-radius:14px;padding:14px 16px;margin-bottom:22px;display:flex;align-items:flex-start;gap:11px;"><span style="font-size:20px;flex-shrink:0;">🎁</span><div><div style="font-size:13px;font-weight:800;color:var(--forest);margin-bottom:3px;">Первый месяц — бесплатно</div><div style="font-size:12px;color:var(--ink2);line-height:1.5;">Заполните заявку и мы свяжемся в течение 2 часов</div></div></div>
+    <div style="background:var(--forest-lt);border:1.5px solid var(--forest-md);border-radius:14px;padding:14px 16px;margin-bottom:22px;display:flex;align-items:flex-start;gap:11px;"><span style="font-size:20px;flex-shrink:0;">🎁</span><div><div style="font-size:13px;font-weight:800;color:var(--forest);margin-bottom:3px;">👑 Первый месяц — Топ бесплатно</div><div style="font-size:12px;color:var(--ink2);line-height:1.5;">Все новые заведения получают тариф Топ на 30 дней бесплатно</div></div></div>
     <div class="form-group"><label class="form-label">Название *</label><input class="form-input" type="text" id="f-name" placeholder="Кафе «Вкусно и Халяль»"></div>
     <div class="form-group"><label class="form-label">Категория *</label><select class="form-select" id="f-cat"><option value="">Выберите</option><option value="Ресторан">🏛️ Ресторан</option><option value="Кафе">☕ Кафе</option><option value="Шашлык">🔥 Шашлык / Гриль</option><option value="Плов">🍚 Плов</option><option value="Шаурма">🌯 Шаурма</option><option value="Выпечка">🥐 Выпечка</option><option value="Другое">✨ Другое</option></select></div>
     <div class="form-group"><label class="form-label">Адрес *</label><input class="form-input" type="text" id="f-addr" placeholder="Улица, дом"></div>
@@ -436,11 +447,14 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
     <div class="form-group"><label class="form-label">Instagram / сайт</label><input class="form-input" type="text" id="f-social" placeholder="@yourplace"></div>
     <div style="height:1px;background:var(--border);margin:20px 0 16px;"></div>
     <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:6px;">Тариф</div>
-    <div style="font-size:13px;color:var(--ink2);margin-bottom:14px;">Первый месяц бесплатно для всех.</div>
+    <div style="font-size:13px;color:var(--ink2);margin-bottom:10px;">Первый месяц — тариф Топ бесплатно.</div>
+    <div style="background:#fff3cd;border:1.5px solid #f0d060;border-radius:11px;padding:9px 13px;margin-bottom:14px;font-size:11px;font-weight:700;color:#856404;">
+      ⏳ Цены действительны до 1 сентября 2026. Действующие клиенты сохраняют цену навсегда.
+    </div>
     <div class="tiers-choice" id="tiers-choice">
-      <div class="tier-opt chosen" data-tier="starter" onclick="chooseTier(this)"><div class="tier-opt-ico">🌱</div><div class="tier-opt-info"><div class="tier-opt-name">Старт</div><div class="tier-opt-desc">Карточка, адрес, телефон</div></div><div><div class="tier-opt-price">990 ₽<span>/ мес</span></div></div><div class="tier-opt-mark"></div></div>
-      <div class="tier-opt" data-tier="pro" onclick="chooseTier(this)"><div class="tier-opt-ico">🚀</div><div class="tier-opt-info"><div class="tier-opt-name">Продвижение</div><div class="tier-opt-desc">+ Рекомендуем + акции</div></div><div><div class="tier-opt-price">2 490 ₽<span>/ мес</span></div></div><div class="tier-opt-mark"></div></div>
-      <div class="tier-opt" data-tier="top" onclick="chooseTier(this)"><div class="tier-opt-ico">👑</div><div class="tier-opt-info"><div class="tier-opt-name">Топ</div><div class="tier-opt-desc">Всё + первое место</div></div><div><div class="tier-opt-price">4 990 ₽<span>/ мес</span></div></div><div class="tier-opt-mark"></div></div>
+      <div class="tier-opt chosen" data-tier="starter" onclick="chooseTier(this)"><div class="tier-opt-ico">🌱</div><div class="tier-opt-info"><div class="tier-opt-name">Старт</div><div class="tier-opt-desc">Карточка, адрес, телефон, часы</div></div><div><div class="tier-opt-price">490 ₽<span>/ мес</span></div></div><div class="tier-opt-mark"></div></div>
+
+      <div class="tier-opt" data-tier="top" onclick="chooseTier(this)"><div class="tier-opt-ico">👑</div><div class="tier-opt-info"><div class="tier-opt-name">Топ</div><div class="tier-opt-desc">Всё + первое место</div></div><div><div class="tier-opt-price">4 490 ₽<span>/ мес</span></div></div><div class="tier-opt-mark"></div></div>
     </div>
     <button class="submit-btn" onclick="submitForm()"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6z"/></svg>Отправить заявку</button>
     <div class="submit-legal">Нажимая кнопку, вы соглашаетесь на обработку данных.<br>Свяжемся в течение 2 часов.</div>
@@ -529,7 +543,7 @@ async function init() {
 
 async function loadPlaces() {
   try {
-    places = await sb('halal_places?status=eq.active&order=tier.desc,votes_up.desc');
+    places = await sb('halal_places?status=eq.active&order=tier.desc,votes_up.desc,created_at.asc');
     document.getElementById('stat-count').textContent = places.length;
     renderFeatured();
     renderList();
@@ -617,7 +631,7 @@ function renderList() {
       <div class="lc-img">${p.emoji||'🍽️'}</div>
       <div class="lc-body">
         <div class="lc-top">
-          <div class="lc-name">${p.name}${p.verified?'<span style="margin-left:5px;background:var(--gold-lt);color:var(--gold);border-radius:5px;padding:1px 6px;font-size:9px;font-weight:800;">✓</span>':''}</div>
+          <div class="lc-name">${p.name}${p.tier==='top'?'<span style="margin-left:5px;background:var(--gold-lt);color:var(--gold);border-radius:5px;padding:1px 6px;font-size:9px;font-weight:800;">👑</span>':''} ${p.verified?'<span style="background:var(--forest-lt);color:var(--forest);border-radius:5px;padding:1px 6px;font-size:9px;font-weight:800;">✓</span>':''}</div>
           <button class="lc-fav ${favorites.has(p.id)?'active':''}" onclick="event.stopPropagation();toggleFav(${p.id},this)"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
         </div>
         <div class="lc-meta">${p.category}${p.promo?` · ${p.promo}`:''}</div>
@@ -852,7 +866,7 @@ async function loadAdminApps() {
   } catch(e) { document.getElementById('admin-list').innerHTML=`<div class="admin-empty"><div class="admin-empty-ico">⚠️</div><div class="admin-empty-title">Ошибка</div><div class="admin-empty-desc">${e.message}</div></div>`; }
 }
 
-const tierLabel={starter:'🌱 Старт',pro:'🚀 Продвижение',top:'👑 Топ'};
+const tierLabel={starter:'🌱 Старт (490₽)',pro:'🌱 Старт (490₽)',top:'👑 Топ (990₽)'};
 const stLabel={new:'Новая',approved:'Одобрена',rejected:'Отклонена'};
 const stClass={new:'st-new',approved:'st-approved',rejected:'st-rejected'};
 
@@ -896,7 +910,7 @@ async function approveApp(appId) {
     const emoji = {Ресторан:'🏛️',Кафе:'☕',Шашлык:'🔥',Плов:'🍚',Шаурма:'🌯',Выпечка:'🥐'}[a.category]||'🍽️';
     const res = await sb('halal_places', {
       method:'POST', prefer:'return=representation',
-      body: JSON.stringify({ name:a.name, category:a.category, emoji, address:a.address, phone:a.phone, hours:a.hours||null, description:a.description||null, social:a.social||null, tier:a.tier, featured:a.tier!=='starter', status:'active' })
+      body: JSON.stringify({ name:a.name, category:a.category, emoji, address:a.address, phone:a.phone, hours:a.hours||null, description:a.description||null, social:a.social||null, tier:'top', featured:true, status:'active', paid:false, subscription_until: new Date(Date.now()+30*86400000).toISOString().split('T')[0] })
     });
     const placeId = res[0]?.id;
     // Обновляем заявку — place_id опционально (колонка может отсутствовать)
@@ -935,6 +949,17 @@ async function loadAdminPlaces() {
   } catch(e) { document.getElementById('admin-list').innerHTML=`<div class="admin-empty"><div class="admin-empty-ico">⚠️</div><div class="admin-empty-title">Ошибка</div><div class="admin-empty-desc">${e.message}</div></div>`; }
 }
 
+function renderSubBadge(p) {
+  if (!p.subscription_until) return '<span style="background:#fff3cd;color:#856404;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;">📅 Без подписки</span>';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const until = new Date(p.subscription_until);
+  const diff = Math.round((until - today) / 86400000);
+  const paid = p.paid ? '✅ Оплачено' : '❌ Не оплачено';
+  if (diff < 0) return `<span style="background:#fdeaea;color:#8b2020;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;">🔴 Истекло · ${paid}</span>`;
+  if (diff <= 3) return `<span style="background:#fff3cd;color:#856404;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;">🟡 ${diff} дн · ${paid}</span>`;
+  return `<span style="background:#e8f2ec;color:#1a4d2e;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;">🟢 до ${until.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})} · ${paid}</span>`;
+}
+
 function renderAdminPlaces() {
   if (!adminPlaces.length) { document.getElementById('admin-list').innerHTML=`<div class="admin-empty"><div class="admin-empty-ico">🏪</div><div class="admin-empty-title">Заведений нет</div><div class="admin-empty-desc">Одобри заявку — заведение появится здесь</div></div>`; return; }
   document.getElementById('admin-list').innerHTML = adminPlaces.map(p=>`
@@ -945,14 +970,52 @@ function renderAdminPlaces() {
           <div class="place-card-name">${p.name}</div>
           <div class="place-card-meta">${p.category} · ${tierLabel[p.tier]||p.tier} · <span class="app-status ${p.status==='active'?'st-active':'st-hidden'}" style="padding:1px 6px;font-size:10px;">${p.status==='active'?'Активно':'Скрыто'}</span></div>
           <div class="place-card-meta" style="margin-top:2px;">👍${p.votes_up||0} 👎${p.votes_down||0}</div>
+          <div class="place-card-meta" style="margin-top:3px;">${renderSubBadge(p)}</div>
         </div>
       </div>
       <div class="place-card-actions">
-        <button class="app-btn btn-approve" style="font-size:11px;" onclick="openEditPlace(${p.id})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Редактировать</button>
-        <button class="app-btn ${p.status==='active'?'btn-hide':'btn-show'}" style="font-size:11px;flex:0.6;" onclick="togglePlaceStatus(${p.id},'${p.status==='active'?'hidden':'active'}')">${p.status==='active'?'Скрыть':'Показать'}</button>
-        <button class="app-btn btn-reject" style="font-size:11px;flex:0.5;" onclick="deletePlace(${p.id})">🗑️ Удалить</button>
+        <button class="app-btn btn-approve" style="font-size:11px;" onclick="openEditPlace(${p.id})">✏️ Редактировать</button>
+        <button class="app-btn ${p.status==='active'?'btn-hide':'btn-show'}" style="font-size:11px;flex:0.6;" onclick="togglePlaceStatus(${p.id},'${p.status==='active'?'hidden':'active'}')">${p.status==='active'?'🙈 Скрыть':'👁 Показать'}</button>
+        <button class="app-btn btn-reject" style="font-size:11px;flex:0.5;" onclick="deletePlace(${p.id})">🗑️</button>
+      </div>
+      <div style="display:flex;gap:6px;padding:0 14px 12px;">
+        <button class="app-btn" style="font-size:11px;flex:1;background:var(--forest-lt);color:var(--forest);" onclick="extendSub(${p.id},30)">+30 дней</button>
+        <button class="app-btn" style="font-size:11px;flex:1;background:${p.paid?'var(--bg3)':'var(--forest)'};color:${p.paid?'var(--ink3)':'#fff'};" onclick="togglePaid(${p.id},${p.paid?'false':'true'})">${p.paid?'❌ Не оплачено':'✅ Оплачено'}</button>
       </div>
     </div>`).join('') + '<div style="height:20px;"></div>';
+}
+
+async function extendSub(id, days) {
+  const p = adminPlaces.find(x=>x.id===id); if(!p) return;
+  const base = p.subscription_until && new Date(p.subscription_until) > new Date() 
+    ? new Date(p.subscription_until) : new Date();
+  base.setDate(base.getDate() + days);
+  const until = base.toISOString().split('T')[0];
+  try {
+    await sb(`halal_places?id=eq.${id}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({subscription_until:until})});
+    p.subscription_until = until;
+    renderAdminPlaces();
+    showToast(`Подписка продлена до ${new Date(until).toLocaleDateString('ru-RU',{day:'numeric',month:'long'})} 📅`,'✅');
+  } catch(e) { showToast('Ошибка: '+e.message,'⚠️'); }
+}
+
+async function togglePaid(id, paid) {
+  const p = adminPlaces.find(x=>x.id===id); if(!p) return;
+  // Если помечаем как оплачено — автоматически продлеваем на 30 дней
+  const update = { paid };
+  if (paid === true || paid === 'true') {
+    const base = p.subscription_until && new Date(p.subscription_until) > new Date()
+      ? new Date(p.subscription_until) : new Date();
+    base.setDate(base.getDate() + 30);
+    update.subscription_until = base.toISOString().split('T')[0];
+  }
+  try {
+    await sb(`halal_places?id=eq.${id}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify(update)});
+    Object.assign(p, update);
+    renderAdminPlaces();
+    const msg = (paid===true||paid==='true') ? '✅ Оплачено — подписка +30 дней' : '❌ Помечено как неоплачено';
+    showToast(msg, paid===true||paid==='true'?'✅':'❌');
+  } catch(e) { showToast('Ошибка: '+e.message,'⚠️'); }
 }
 
 async function togglePlaceStatus(id, status) {
@@ -982,19 +1045,22 @@ function openEditPlace(id) {
   const p = adminPlaces.find(x=>x.id===id); if(!p) return;
   editingId=id; editingTable='halal_places';
   document.getElementById('edit-title').textContent = 'Редактировать: '+p.name;
-  document.getElementById('edit-fields').innerHTML = `
-    <div class="form-group"><label class="form-label">Название</label><input class="form-input" id="ef-name" value="${p.name||''}"></div>
-    <div class="form-group"><label class="form-label">Эмодзи</label><input class="form-input" id="ef-emoji" value="${p.emoji||'🍽️'}" style="font-size:22px;text-align:center;"></div>
-    <div class="form-group"><label class="form-label">Категория</label><select class="form-select" id="ef-category"><option ${p.category==='Ресторан'?'selected':''}>Ресторан</option><option ${p.category==='Кафе'?'selected':''}>Кафе</option><option ${p.category==='Шашлык'?'selected':''}>Шашлык</option><option ${p.category==='Плов'?'selected':''}>Плов</option><option ${p.category==='Шаурма'?'selected':''}>Шаурма</option><option ${p.category==='Выпечка'?'selected':''}>Выпечка</option><option ${p.category==='Другое'?'selected':''}>Другое</option></select></div>
-    <div class="form-group"><label class="form-label">Адрес</label><input class="form-input" id="ef-address" value="${p.address||''}"></div>
-    <div class="form-group"><label class="form-label">Телефон</label><input class="form-input" id="ef-phone" value="${p.phone||''}"></div>
-    <div class="form-group"><label class="form-label">Часы работы</label><input class="form-input" id="ef-hours" value="${p.hours||''}"></div>
-    <div class="form-group"><label class="form-label">Описание</label><textarea class="form-input" id="ef-description">${p.description||''}</textarea></div>
-    <div class="form-group"><label class="form-label">Соцсети</label><input class="form-input" id="ef-social" value="${p.social||''}"></div>
-    <div class="form-group"><label class="form-label">Акция/промо</label><input class="form-input" id="ef-promo" value="${p.promo||''}" placeholder="🎵 Живая музыка"></div>
-    <div class="form-group"><label class="form-label">Тариф</label><select class="form-select" id="ef-tier"><option value="starter" ${p.tier==='starter'?'selected':''}>🌱 Старт</option><option value="pro" ${p.tier==='pro'?'selected':''}>🚀 Продвижение</option><option value="top" ${p.tier==='top'?'selected':''}>👑 Топ</option></select></div>
-    <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-verified" ${p.verified?'checked':''} style="width:16px;height:16px;"> Верифицировано</label></div>
-    <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-featured" ${p.featured?'checked':''} style="width:16px;height:16px;"> В блоке «Рекомендуем»</label></div>`;
+  const subVal = p.subscription_until ? p.subscription_until.split('T')[0] : '';
+  document.getElementById('edit-fields').innerHTML = 
+    '<div class="form-group"><label class="form-label">Название</label><input class="form-input" id="ef-name" value="'+( p.name||'')+'"></div>' +
+    '<div class="form-group"><label class="form-label">Эмодзи</label><input class="form-input" id="ef-emoji" value="'+(p.emoji||'🍽️')+'" style="font-size:22px;text-align:center;"></div>' +
+    '<div class="form-group"><label class="form-label">Категория</label><select class="form-select" id="ef-category"><option '+(p.category==='Ресторан'?'selected':'')+'>Ресторан</option><option '+(p.category==='Кафе'?'selected':'')+'>Кафе</option><option '+(p.category==='Шашлык'?'selected':'')+'>Шашлык</option><option '+(p.category==='Плов'?'selected':'')+'>Плов</option><option '+(p.category==='Шаурма'?'selected':'')+'>Шаурма</option><option '+(p.category==='Выпечка'?'selected':'')+'>Выпечка</option><option '+(p.category==='Другое'?'selected':'')+'>Другое</option></select></div>' +
+    '<div class="form-group"><label class="form-label">Адрес</label><input class="form-input" id="ef-address" value="'+(p.address||'')+'"></div>' +
+    '<div class="form-group"><label class="form-label">Телефон</label><input class="form-input" id="ef-phone" value="'+(p.phone||'')+'"></div>' +
+    '<div class="form-group"><label class="form-label">Часы работы</label><input class="form-input" id="ef-hours" value="'+(p.hours||'')+'"></div>' +
+    '<div class="form-group"><label class="form-label">Описание</label><textarea class="form-input" id="ef-description">'+(p.description||'')+'</textarea></div>' +
+    '<div class="form-group"><label class="form-label">Соцсети</label><input class="form-input" id="ef-social" value="'+(p.social||'')+'"></div>' +
+    '<div class="form-group"><label class="form-label">Акция/промо</label><input class="form-input" id="ef-promo" value="'+(p.promo||'')+'" placeholder="🎵 Живая музыка"></div>' +
+    '<div class="form-group"><label class="form-label">Тариф</label><select class="form-select" id="ef-tier"><option value="starter" '+(p.tier==='starter'?'selected':'')+'>🌱 Старт (490₽)</option><option value="top" '+(p.tier==='top'?'selected':'')+'>👑 Топ (990₽)</option></select></div>' +
+    '<div class="form-group"><label class="form-label">Подписка до</label><input class="form-input" type="date" id="ef-sub-until" value="'+subVal+'"></div>' +
+    '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-paid" '+(p.paid?'checked':'')+' style="width:16px;height:16px;"> Оплачено</label></div>' +
+    '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-verified" '+(p.verified?'checked':'')+' style="width:16px;height:16px;"> Верифицировано</label></div>' +
+    '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-featured" '+(p.featured?'checked':'')+' style="width:16px;height:16px;"> В блоке «Рекомендуем»</label></div>';
   document.getElementById('edit-overlay').classList.add('open');
 }
 
@@ -1013,6 +1079,8 @@ async function saveEdit() {
     tier: document.getElementById('ef-tier').value,
     verified: document.getElementById('ef-verified').checked,
     featured: document.getElementById('ef-featured').checked,
+    subscription_until: document.getElementById('ef-sub-until').value || null,
+    paid: document.getElementById('ef-paid').checked,
   };
   try {
     await sb(`halal_places?id=eq.${editingId}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify(data)});

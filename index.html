@@ -1329,7 +1329,7 @@ document.getElementById('screen-submit').addEventListener('transitionstart',()=>
 </div>
 
 <!-- СКРЫТЫЙ ТРИГГЕР — 5 тапов по логотипу бренда -->
-<div id="admin-trigger" style="position:fixed;top:52px;left:16px;width:52px;height:52px;opacity:0;z-index:500;cursor:default;" onclick="adminTriggerTap()"></div>
+<div id="admin-trigger" style="position:fixed;top:52px;left:16px;width:52px;height:52px;opacity:0;z-index:500;cursor:default;"></div>
 
 <script>
 // ════════════ ADMIN CONFIG ════════════
@@ -1337,14 +1337,26 @@ const ADMIN_PASS = 'halal2024'; // ← поменяй на свой пароль
 const SB_URL = 'https://yiqipulgofoschkccaxr.supabase.co';
 const SB_KEY = ''; // ← вставь anon key из Supabase Dashboard → Settings → API
 
-// ════════════ ADMIN TRIGGER (5 тапов) ════════════
-let tapCount = 0, tapTimer = null;
-function adminTriggerTap() {
-  tapCount++;
-  clearTimeout(tapTimer);
-  tapTimer = setTimeout(() => tapCount = 0, 2000);
-  if (tapCount >= 5) { tapCount = 0; openAdmin(); }
+// ════════════ ADMIN TRIGGER (долгое нажатие 3 сек на логотип) ════════════
+let pressTimer = null;
+const trigger = document.getElementById('admin-trigger');
+
+function startPress() {
+  pressTimer = setTimeout(() => {
+    navigator.vibrate && navigator.vibrate(40);
+    openAdmin();
+  }, 3000);
 }
+function cancelPress() {
+  clearTimeout(pressTimer);
+}
+
+trigger.addEventListener('touchstart', startPress, { passive: true });
+trigger.addEventListener('touchend', cancelPress);
+trigger.addEventListener('touchmove', cancelPress);
+trigger.addEventListener('mousedown', startPress);
+trigger.addEventListener('mouseup', cancelPress);
+trigger.addEventListener('mouseleave', cancelPress);
 
 // ════════════ ADMIN OPEN/CLOSE ════════════
 function openAdmin() {

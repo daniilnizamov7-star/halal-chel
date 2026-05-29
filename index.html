@@ -735,6 +735,16 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
       </div>
     </div>
 
+    <!-- Кнопка входа в админку — еле заметная точка -->
+    <div style="text-align:center;padding:8px 0 4px;">
+      <button id="admin-dot-btn" onclick="openAdmin()"
+        style="width:28px;height:28px;border-radius:50%;border:none;
+               background:var(--bg4);opacity:0.35;cursor:pointer;
+               font-size:0;transition:opacity .2s;"
+        onmouseenter="this.style.opacity='.7'"
+        onmouseleave="this.style.opacity='.35'"
+        aria-label="admin">·</button>
+    </div>
     <div class="pb-safe"></div>
   </div><!-- /scroll -->
 
@@ -1329,7 +1339,7 @@ document.getElementById('screen-submit').addEventListener('transitionstart',()=>
 </div>
 
 <!-- СКРЫТЫЙ ТРИГГЕР — 5 тапов по логотипу бренда -->
-<div id="admin-trigger" style="position:fixed;top:52px;left:16px;width:52px;height:52px;opacity:0;z-index:500;cursor:default;"></div>
+
 
 <script>
 // ════════════ ADMIN CONFIG ════════════
@@ -1337,29 +1347,7 @@ const ADMIN_PASS = 'halal2024'; // ← поменяй на свой пароль
 const SB_URL = 'https://yiqipulgofoschkccaxr.supabase.co';
 const SB_KEY = ''; // ← вставь anon key из Supabase Dashboard → Settings → API
 
-// ════════════ ADMIN TRIGGER (долгое нажатие 3 сек на логотип) ════════════
-let pressTimer = null;
-const trigger = document.getElementById('admin-trigger');
-
-function startPress() {
-  pressTimer = setTimeout(() => {
-    navigator.vibrate && navigator.vibrate(40);
-    openAdmin();
-  }, 3000);
-}
-function cancelPress() {
-  clearTimeout(pressTimer);
-}
-
-trigger.addEventListener('touchstart', e => { e.preventDefault(); startPress(); }, { passive: false });
-trigger.addEventListener('touchend', cancelPress);
-trigger.addEventListener('touchmove', cancelPress);
-trigger.addEventListener('mousedown', startPress);
-trigger.addEventListener('mouseup', cancelPress);
-trigger.addEventListener('mouseleave', cancelPress);
-trigger.addEventListener('contextmenu', e => e.preventDefault());
-trigger.style.userSelect = 'none';
-trigger.style.webkitUserSelect = 'none';
+// ════════════ ADMIN TRIGGER ════════════
 
 // ════════════ ADMIN OPEN/CLOSE ════════════
 function openAdmin() {

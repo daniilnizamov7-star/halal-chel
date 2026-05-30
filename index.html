@@ -778,32 +778,36 @@ async function castVote(placeId, vote, e) {
   const place = places.find(p=>p.id===placeId);
   if (!place) return;
   const prev = myVotes[placeId];
-  // Если тот же голос — убираем (отмена голоса)
-  // Если другой голос — меняем
 
   try {
-    // Upsert голоса
-    await sb('halal_votes', {
-      method:'POST', prefer:'resolution=merge-duplicates',
-      body: JSON.stringify({ place_id:placeId, voter_key:voterKey, vote })
-    });
-    // Пересчитать счётчики
+    // Сначала обновляем счётчики локально
     if (prev==='up') place.votes_up = Math.max(0,(place.votes_up||1)-1);
     if (prev==='down') place.votes_down = Math.max(0,(place.votes_down||1)-1);
+
     if (prev === vote) {
-      // Отмена голоса — удаляем запись
+      // ОТМЕНА ГОЛОСА — удаляем из БД
+      await sb('halal_votes?place_id=eq.'+placeId+'&voter_key=eq.'+voterKey, {
+        method:'DELETE', prefer:'return=minimal'
+      });
+      await sb('halal_places?id=eq.'+placeId, {
+        method:'PATCH', prefer:'return=minimal',
+        body: JSON.stringify({votes_up:place.votes_up, votes_down:place.votes_down})
+      });
       delete myVotes[placeId];
       localStorage.setItem('hc_votes', JSON.stringify(myVotes));
-      // Удалить из БД
-      try { await sb('halal_votes?place_id=eq.'+placeId+'&voter_key=eq.'+voterKey, {method:'DELETE',prefer:'return=minimal'}); } catch{}
-      await sb('halal_places?id=eq.'+placeId,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({votes_up:place.votes_up,votes_down:place.votes_down})});
       renderList();
       if(currentDetailId===placeId) openDetail(placeId);
       showToast('Голос отменён','↩️');
       return;
     }
+
+    // НОВЫЙ ГОЛОС или СМЕНА — upsert
     if (vote==='up') place.votes_up = (place.votes_up||0)+1;
     if (vote==='down') place.votes_down = (place.votes_down||0)+1;
+    await sb('halal_votes', {
+      method:'POST', prefer:'resolution=merge-duplicates',
+      body: JSON.stringify({ place_id:placeId, voter_key:voterKey, vote })
+    });
     myVotes[placeId] = vote;
     localStorage.setItem('hc_votes', JSON.stringify(myVotes));
     renderList();

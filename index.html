@@ -255,6 +255,35 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
 .tier-price-sub{font-size:10px;color:var(--ink3);font-weight:500;margin-top:3px;}
 .tier-card.featured .tier-price-sub{color:rgba(255,255,255,.5);}
 
+
+/* REVIEW MODAL */
+.review-overlay{position:fixed;inset:0;max-width:430px;margin:0 auto;background:rgba(13,27,15,.5);z-index:450;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;}
+.review-overlay.open{opacity:1;pointer-events:all;}
+.review-sheet{width:100%;background:var(--bg2);border-radius:24px 24px 0 0;padding:20px 20px max(24px,env(safe-area-inset-bottom));transform:translateY(40px);transition:transform .27s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 40px rgba(0,0,0,.15);}
+.review-overlay.open .review-sheet{transform:translateY(0);}
+.review-handle{width:44px;height:4px;background:var(--bg4);border-radius:2px;margin:0 auto 16px;}
+.review-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:6px;}
+.review-sub{font-size:13px;color:var(--ink2);margin-bottom:16px;line-height:1.5;}
+.review-textarea{width:100%;background:var(--bg3);border:1.5px solid var(--border);border-radius:11px;padding:11px 14px;font-family:'Manrope',sans-serif;font-size:14px;color:var(--ink);outline:none;resize:none;min-height:80px;line-height:1.6;transition:border-color .2s;}
+.review-textarea:focus{border-color:var(--forest-md);background:#fff;}
+.review-textarea::placeholder{color:var(--ink3);}
+.complaint-opts{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.complaint-opt{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:11px;padding:11px 14px;cursor:pointer;transition:all .17s;}
+.complaint-opt:hover,.complaint-opt.sel{background:var(--red-lt);border-color:#f2c4c0;}
+.complaint-opt-ico{font-size:20px;flex-shrink:0;}
+.complaint-opt-text{font-size:13px;font-weight:700;}
+.complaint-opt-sub{font-size:11px;color:var(--ink3);margin-top:1px;}
+.review-btns{display:flex;gap:8px;margin-top:14px;}
+.review-btn{flex:1;border:none;border-radius:12px;padding:13px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:opacity .17s;}
+.review-btn-send{background:var(--forest);color:#fff;}
+.review-btn-skip{background:var(--bg3);color:var(--ink2);}
+.complaint-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:transparent;border:1.5px solid var(--border);border-radius:11px;padding:10px;font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;color:var(--ink3);cursor:pointer;margin-top:10px;transition:all .17s;}
+.complaint-btn:hover{border-color:#f2c4c0;color:var(--red);background:var(--red-lt);}
+.reviews-block{margin-top:18px;}
+.review-item{background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+.review-item-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.review-date{font-size:10px;color:var(--ink3);font-weight:600;}
+.review-text{font-size:13px;color:var(--ink2);line-height:1.6;}
 /* ADMIN */
 .screen-admin{position:fixed;inset:0;max-width:430px;margin:0 auto;background:var(--bg);z-index:300;overflow:hidden;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);}
 .screen-admin.open{transform:translateY(0);}
@@ -485,6 +514,7 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
     <div class="admin-tabs">
       <div class="admin-tab active" data-tab="apps" onclick="setAdminTab('apps')">Заявки<span id="badge-new" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
       <div class="admin-tab" data-tab="places" onclick="setAdminTab('places')">Заведения</div>
+      <div class="admin-tab" data-tab="reviews" onclick="setAdminTab('reviews')">Отзывы<span id="badge-reviews" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
     </div>
     <div class="admin-scroll" id="admin-list"></div>
     <div class="pb-safe"></div>
@@ -700,6 +730,8 @@ async function castVote(placeId, vote, e) {
     renderList();
     if(currentDetailId===placeId) openDetail(placeId);
     showToast(vote==='up'?'Спасибо за оценку 👍':'Жаль, что не понравилось 👎', vote==='up'?'👍':'👎');
+    // Предложить оставить отзыв
+    setTimeout(() => openReviewAfterVote(placeId, vote), 600);
     // Обновить в БД
     await sb(`halal_places?id=eq.${placeId}`, {
       method:'PATCH', prefer:'return=minimal',
@@ -750,12 +782,17 @@ function openDetail(id) {
         </div>
       </div>
     </div>
+    <button class="complaint-btn" onclick="openComplaint(currentDetailId)">
+      ⚠️ Пожаловаться на заведение
+    </button>
     <div class="det-actions">
       <a class="btn-call" href="tel:${p.phone}"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6z"/></svg>Позвонить</a>
       <a class="btn-map" href="#" onclick="event.preventDefault();window.open('https://2gis.ru/chelyabinsk/search/'+encodeURIComponent(p.address),'_blank')"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>На карте</a>
     </div>`;
   document.getElementById('screen-detail').classList.add('open');
   history.pushState({},'','');
+  // Загрузить отзывы
+  loadReviews(id);
 }
 function closeDetail() { document.getElementById('screen-detail').classList.remove('open'); }
 
@@ -875,10 +912,10 @@ function checkAdminPw() {
 function setAdminTab(tab) {
   adminTab=tab;
   document.querySelectorAll('.admin-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
-  document.getElementById('admin-panel-title').textContent = tab==='apps'?'Заявки':'Заведения';
+  document.getElementById('admin-panel-title').textContent = tab==='apps'?'Заявки':tab==='places'?'Заведения':'Отзывы и жалобы';
   reloadAdminTab();
 }
-function reloadAdminTab() { adminTab==='apps'?loadAdminApps():loadAdminPlaces(); }
+function reloadAdminTab() { adminTab==='apps'?loadAdminApps():adminTab==='places'?loadAdminPlaces():loadAdminReviews(); }
 
 // ── ЗАЯВКИ ──
 let appsFilter='new';
@@ -1046,6 +1083,60 @@ async function togglePaid(id, paid) {
   } catch(e) { showToast('Ошибка: '+e.message,'⚠️'); }
 }
 
+// ── ОТЗЫВЫ В АДМИНКЕ ──
+let adminReviews = [];
+async function loadAdminReviews() {
+  document.getElementById('admin-list').innerHTML = '<div class="loader"><div class="loader-spin"></div><div class="loader-text">Загружаем…</div></div>';
+  try {
+    adminReviews = await sb('halal_reviews?order=created_at.desc&limit=50');
+    const complaints = adminReviews.filter(r => r.is_complaint && r.status === 'new');
+    const badge = document.getElementById('badge-reviews');
+    if (complaints.length) { badge.style.display='inline'; badge.textContent=complaints.length; }
+    else badge.style.display='none';
+    document.getElementById('admin-stats-label').textContent = 'Отзывов: ' + adminReviews.length + ' · Жалоб: ' + complaints.length;
+    renderAdminReviews();
+  } catch(e) {
+    document.getElementById('admin-list').innerHTML = '<div class="admin-empty"><div class="admin-empty-ico">⚠️</div><div class="admin-empty-title">Ошибка</div><div class="admin-empty-desc">' + e.message + '</div></div>';
+  }
+}
+
+const reasonLabel = {halal:'🚫 Харам продукты', quality:'😞 Плохое качество', closed:'🔒 Заведение закрыто', other:'📝 Другое'};
+
+function renderAdminReviews() {
+  if (!adminReviews.length) {
+    document.getElementById('admin-list').innerHTML = '<div class="admin-empty"><div class="admin-empty-ico">💬</div><div class="admin-empty-title">Отзывов нет</div><div class="admin-empty-desc">Здесь появятся отзывы и жалобы посетителей</div></div>';
+    return;
+  }
+  const place = (id) => { const p = adminPlaces.find(x=>x.id===id); return p ? p.name : 'ID '+id; };
+  document.getElementById('admin-list').innerHTML = adminReviews.map(r => {
+    const d = new Date(r.created_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    return '<div class="app-card" style="' + (r.is_complaint ? 'border-color:#f2c4c0;' : '') + '">' +
+      '<div class="app-card-head">' +
+        '<div>' +
+          '<div class="app-card-name">' + (r.is_complaint ? '⚠️ Жалоба' : (r.vote==='up'?'👍':'👎') + ' Отзыв') + '</div>' +
+          '<div class="app-card-cat">' + place(r.place_id) + (r.is_complaint && r.complaint_reason ? ' · ' + (reasonLabel[r.complaint_reason]||r.complaint_reason) : '') + '</div>' +
+        '</div>' +
+        '<div class="app-status ' + (r.status==='new'?'st-new':r.status==='approved'?'st-approved':'st-hidden') + '">' + (r.status==='new'?'Новый':r.status==='approved'?'Опубликован':'Скрыт') + '</div>' +
+      '</div>' +
+      (r.comment ? '<div class="app-card-body"><div class="app-row"><span class="app-row-val">' + r.comment + '</span></div></div>' : '') +
+      '<div class="app-date">' + d + '</div>' +
+      '<div class="app-actions">' +
+        (r.status !== 'approved' && !r.is_complaint ? '<button class="app-btn btn-approve" onclick="updateReview(' + r.id + ',\'approved\')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Опубликовать</button>' : '') +
+        (r.status !== 'hidden' ? '<button class="app-btn btn-reject" style="flex:0.6;" onclick="updateReview(' + r.id + ',\'hidden\')">🙈 Скрыть</button>' : '<button class="app-btn btn-show" style="flex:0.6;" onclick="updateReview(' + r.id + ',\'new\')">👁 Показать</button>') +
+      '</div>' +
+    '</div>';
+  }).join('') + '<div style="height:20px;"></div>';
+}
+
+async function updateReview(id, status) {
+  try {
+    await sb('halal_reviews?id=eq.'+id, {method:'PATCH', prefer:'return=minimal', body:JSON.stringify({status})});
+    const r = adminReviews.find(x=>x.id===id); if(r) r.status=status;
+    renderAdminReviews();
+    showToast(status==='approved'?'Отзыв опубликован':'Отзыв скрыт', '✅');
+  } catch(e) { showToast('Ошибка','⚠️'); }
+}
+
 async function togglePlaceStatus(id, status) {
   try {
     await sb(`halal_places?id=eq.${id}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({status})});
@@ -1163,6 +1254,7 @@ if ('serviceWorker' in navigator) {
 // BACK BUTTON
 // ══════════════════════════════════════════
 window.addEventListener('popstate',()=>{
+  if(document.getElementById('review-overlay').classList.contains('open')){closeReview();return;}
   if(document.getElementById('edit-overlay').classList.contains('open')){closeEdit();return;}
   if(document.getElementById('screen-admin').classList.contains('open')){closeAdmin();return;}
   if(document.getElementById('screen-detail').classList.contains('open')){closeDetail();return;}
@@ -1207,6 +1299,124 @@ function shareQR() {
   }
 }
 
+// ══════════════════════════════════════════
+// ОТЗЫВЫ И ЖАЛОБЫ
+// ══════════════════════════════════════════
+let reviewPlaceId = null, reviewVote = null, selectedComplaintReason = null;
+
+// Открыть после голосования
+function openReviewAfterVote(placeId, vote) {
+  reviewPlaceId = placeId;
+  reviewVote = vote;
+  document.getElementById('review-mode-vote').style.display = 'block';
+  document.getElementById('review-mode-complaint').style.display = 'none';
+  document.getElementById('review-title').textContent = vote === 'up' ? 'Спасибо за оценку! 👍' : 'Жаль, что не понравилось 👎';
+  document.getElementById('review-text').value = '';
+  document.getElementById('review-char').textContent = '0 / 300';
+  document.getElementById('review-overlay').classList.add('open');
+  // Счётчик символов
+  document.getElementById('review-text').oninput = function() {
+    document.getElementById('review-char').textContent = this.value.length + ' / 300';
+  };
+}
+
+// Открыть жалобу
+function openComplaint(placeId) {
+  reviewPlaceId = placeId;
+  reviewVote = 'down';
+  selectedComplaintReason = null;
+  document.getElementById('review-mode-vote').style.display = 'none';
+  document.getElementById('review-mode-complaint').style.display = 'block';
+  document.getElementById('complaint-text').value = '';
+  document.querySelectorAll('.complaint-opt').forEach(o => o.classList.remove('sel'));
+  document.getElementById('review-overlay').classList.add('open');
+  history.pushState({}, '', '');
+}
+
+function selectComplaint(el) {
+  document.querySelectorAll('.complaint-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedComplaintReason = el.dataset.reason;
+}
+
+function closeReview() {
+  document.getElementById('review-overlay').classList.remove('open');
+}
+
+async function submitReview() {
+  const comment = document.getElementById('review-text').value.trim();
+  if (!reviewPlaceId) return;
+  try {
+    await sb('halal_reviews', {
+      method: 'POST', prefer: 'return=minimal',
+      body: JSON.stringify({
+        place_id: reviewPlaceId,
+        vote: reviewVote,
+        comment: comment || null,
+        voter_key: voterKey,
+        status: 'new',
+        is_complaint: false
+      })
+    });
+    closeReview();
+    showToast('Отзыв отправлен, спасибо! 🙏', '✅');
+    loadReviews(reviewPlaceId);
+  } catch(e) {
+    showToast('Ошибка отправки', '⚠️');
+  }
+}
+
+async function submitComplaint() {
+  if (!selectedComplaintReason) { showToast('Выберите причину жалобы', '⚠️'); return; }
+  const comment = document.getElementById('complaint-text').value.trim();
+  try {
+    await sb('halal_reviews', {
+      method: 'POST', prefer: 'return=minimal',
+      body: JSON.stringify({
+        place_id: reviewPlaceId,
+        vote: 'down',
+        comment: comment || null,
+        voter_key: voterKey,
+        status: 'new',
+        is_complaint: true,
+        complaint_reason: selectedComplaintReason
+      })
+    });
+    closeReview();
+    showToast('Жалоба отправлена. Разберёмся в течение 24 часов 🔍', '✅');
+  } catch(e) {
+    showToast('Ошибка отправки', '⚠️');
+  }
+}
+
+async function loadReviews(placeId) {
+  try {
+    const reviews = await sb('halal_reviews?place_id=eq.' + placeId + '&is_complaint=eq.false&comment=not.is.null&status=neq.hidden&order=created_at.desc&limit=5');
+    const detBody = document.getElementById('detail-body');
+    if (!detBody) return;
+    // Убрать старый блок отзывов если есть
+    const old = detBody.querySelector('.reviews-block');
+    if (old) old.remove();
+    if (!reviews || !reviews.length) return;
+    const block = document.createElement('div');
+    block.className = 'reviews-block';
+    block.innerHTML = '<div class="det-sec-label" style="margin-bottom:10px;">Отзывы посетителей</div>' +
+      reviews.map(r => {
+        const d = new Date(r.created_at);
+        const date = d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'});
+        return '<div class="review-item">' +
+          '<div class="review-item-top">' +
+          '<span style="font-size:16px;">' + (r.vote === 'up' ? '👍' : '👎') + '</span>' +
+          '<span class="review-date">' + date + '</span>' +
+          '</div>' +
+          '<div class="review-text">' + r.comment + '</div>' +
+          '</div>';
+      }).join('');
+    detBody.appendChild(block);
+  } catch(e) { /* тихо */ }
+}
+
+
 init();
 </script>
 <!-- ════ QR МОДАЛКА ════ -->
@@ -1224,6 +1434,50 @@ init();
   </div>
 </div>
 
+
+<!-- REVIEW MODAL -->
+<div class="review-overlay" id="review-overlay" onclick="if(event.target===this)closeReview()">
+  <div class="review-sheet">
+    <div class="review-handle"></div>
+    <div id="review-mode-vote">
+      <div class="review-title" id="review-title">Спасибо за оценку! 👍</div>
+      <div class="review-sub">Хотите добавить комментарий? Это поможет другим выбрать заведение.</div>
+      <textarea class="review-textarea" id="review-text" placeholder="Расскажите о своём опыте…" maxlength="300"></textarea>
+      <div style="font-size:11px;color:var(--ink3);text-align:right;margin-top:4px;" id="review-char">0 / 300</div>
+      <div class="review-btns">
+        <button class="review-btn review-btn-skip" onclick="closeReview()">Пропустить</button>
+        <button class="review-btn review-btn-send" onclick="submitReview()">Отправить</button>
+      </div>
+    </div>
+    <div id="review-mode-complaint" style="display:none;">
+      <div class="review-title">Пожаловаться на заведение</div>
+      <div class="review-sub">Укажите причину — мы разберёмся в течение 24 часов.</div>
+      <div class="complaint-opts">
+        <div class="complaint-opt" data-reason="halal" onclick="selectComplaint(this)">
+          <div class="complaint-opt-ico">🚫</div>
+          <div><div class="complaint-opt-text">Харам продукты</div><div class="complaint-opt-sub">Продают алкоголь, свинину или другое харам</div></div>
+        </div>
+        <div class="complaint-opt" data-reason="quality" onclick="selectComplaint(this)">
+          <div class="complaint-opt-ico">😞</div>
+          <div><div class="complaint-opt-text">Плохое качество</div><div class="complaint-opt-sub">Еда или обслуживание не соответствуют описанию</div></div>
+        </div>
+        <div class="complaint-opt" data-reason="closed" onclick="selectComplaint(this)">
+          <div class="complaint-opt-ico">🔒</div>
+          <div><div class="complaint-opt-text">Заведение закрыто</div><div class="complaint-opt-sub">Больше не работает или переехало</div></div>
+        </div>
+        <div class="complaint-opt" data-reason="other" onclick="selectComplaint(this)">
+          <div class="complaint-opt-ico">📝</div>
+          <div><div class="complaint-opt-text">Другое</div><div class="complaint-opt-sub">Опишите проблему в комментарии</div></div>
+        </div>
+      </div>
+      <textarea class="review-textarea" id="complaint-text" placeholder="Дополнительные детали (необязательно)…" maxlength="300"></textarea>
+      <div class="review-btns">
+        <button class="review-btn review-btn-skip" onclick="closeReview()">Отмена</button>
+        <button class="review-btn review-btn-send" style="background:var(--red);" onclick="submitComplaint()">Отправить жалобу</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div><!-- /shell -->
 </body>
 </html>

@@ -382,14 +382,7 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
         <div class="hero-stat"><div class="hero-stat-n">от 0 ₽</div><div class="hero-stat-l">первый месяц</div></div>
       </div>
     </div>
-    <div class="section">
-      <div class="sec-hd"><span class="sec-title">Рекомендуем</span><span class="sec-link" onclick="setCat('all')">Все →</span></div>
-      <div style="position:relative;">
-        <div class="featured-row" id="featured-row"><div class="loader"><div class="loader-spin"></div></div></div>
-        <div style="position:absolute;right:0;top:0;bottom:0;width:40px;background:linear-gradient(to right,transparent,var(--bg));pointer-events:none;border-radius:0 var(--r) var(--r) 0;"></div>
-      </div>
-      <div id="feat-dots" style="display:flex;justify-content:center;gap:5px;margin-top:10px;"></div>
-    </div>
+    
     <div class="section" style="padding-top:24px;"><div class="sec-hd"><span class="sec-title">Все заведения</span><span id="count-label" class="sec-count"></span></div>
       <div style="background:var(--forest-lt);border:1.5px solid var(--forest-md);border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:9px;">
         <span style="font-size:18px;flex-shrink:0;">👥</span>
@@ -554,7 +547,6 @@ async function loadPlaces() {
   try {
     places = await sb('halal_places?status=eq.active&order=tier.desc,votes_up.desc,created_at.asc');
     document.getElementById('stat-count').textContent = places.length;
-    renderFeatured();
     renderList();
   } catch(e) {
     document.getElementById('list-container').innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Ошибка загрузки</div><div class="empty-desc">${e.message}</div></div>`;
@@ -659,20 +651,24 @@ function renderList() {
   document.getElementById('list-container').innerHTML = f.map(p => {
     const pct = votePct(p);
     const myVote = myVotes[p.id];
-    return `<div class="lc fade-up" onclick="openDetail(${p.id})">
-      <div class="lc-img">${p.emoji||'🍽️'}</div>
-      <div class="lc-body">
-        <div class="lc-top">
-          <div class="lc-name">${p.name}${p.tier==='top'?'<span style="margin-left:5px;background:var(--gold-lt);color:var(--gold);border-radius:5px;padding:1px 6px;font-size:9px;font-weight:800;">👑</span>':''} ${p.verified?'<span style="background:var(--forest-lt);color:var(--forest);border-radius:5px;padding:1px 6px;font-size:9px;font-weight:800;">✓</span>':''}</div>
-          <button class="lc-fav ${favorites.has(p.id)?'active':''}" onclick="event.stopPropagation();toggleFav(${p.id},this)"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+    const isTop = p.tier === 'top' && p.featured;
+    return `<div class="lc fade-up" onclick="openDetail(${p.id})" style="${isTop ? 'border-color:#d4a843;box-shadow:0 2px 12px rgba(139,105,20,.15);' : ''}">
+      ${isTop ? '<div style="background:linear-gradient(90deg,var(--gold),#c8960a);color:#fff;font-size:10px;font-weight:800;padding:4px 14px;letter-spacing:.3px;">👑 РЕКОМЕНДУЕМ</div>' : ''}
+      <div style="display:flex;align-items:stretch;">
+        <div class="lc-img">${p.emoji||'🍽️'}</div>
+        <div class="lc-body">
+          <div class="lc-top">
+            <div class="lc-name">${p.name}${p.verified ? '<span style="margin-left:5px;background:var(--forest-lt);color:var(--forest);border-radius:5px;padding:1px 6px;font-size:9px;font-weight:800;">✓</span>' : ''}</div>
+            <button class="lc-fav ${favorites.has(p.id)?'active':''}" onclick="event.stopPropagation();toggleFav(${p.id},this)"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+          </div>
+          <div class="lc-meta">${p.category}${p.promo ? ' · ' + p.promo : ''}</div>
+          <div class="chips"><span class="chip ch-halal">☪ Халяль</span>${openChip(p.hours)}</div>
+          ${pct !== null ? `<div class="vote-bar" onclick="event.stopPropagation();">
+            <button class="vote-btn ${myVote==='up'?'voted-up':''}" onclick="castVote(${p.id},'up',event)">👍 ${p.votes_up||0}</button>
+            <div class="vote-pct"><div class="vote-pct-fill" style="width:${pct}%"></div></div>
+            <button class="vote-btn ${myVote==='down'?'voted-down':''}" onclick="castVote(${p.id},'down',event)">👎 ${p.votes_down||0}</button>
+          </div>` : ''}
         </div>
-        <div class="lc-meta">${p.category}${p.promo?` · ${p.promo}`:''}</div>
-        <div class="chips"><span class="chip ch-halal">☪ Халяль</span>${openChip(p.hours)}</div>
-        ${pct!==null?`<div class="vote-bar" onclick="event.stopPropagation();">
-          <button class="vote-btn ${myVote==='up'?'voted-up':''}" onclick="castVote(${p.id},'up',event)">👍 ${p.votes_up||0}</button>
-          <div class="vote-pct"><div class="vote-pct-fill" style="width:${pct}%"></div></div>
-          <button class="vote-btn ${myVote==='down'?'voted-down':''}" onclick="castVote(${p.id},'down',event)">👎 ${p.votes_down||0}</button>
-        </div>`:''}
       </div>
     </div>`;
   }).join('');

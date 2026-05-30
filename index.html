@@ -382,7 +382,14 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
         <div class="hero-stat"><div class="hero-stat-n">от 0 ₽</div><div class="hero-stat-l">первый месяц</div></div>
       </div>
     </div>
-    <div class="section"><div class="sec-hd"><span class="sec-title">Рекомендуем</span><span class="sec-link" onclick="setCat('all')">Все →</span></div><div class="featured-row" id="featured-row"><div class="loader"><div class="loader-spin"></div></div></div></div>
+    <div class="section">
+      <div class="sec-hd"><span class="sec-title">Рекомендуем</span><span class="sec-link" onclick="setCat('all')">Все →</span></div>
+      <div style="position:relative;">
+        <div class="featured-row" id="featured-row"><div class="loader"><div class="loader-spin"></div></div></div>
+        <div style="position:absolute;right:0;top:0;bottom:0;width:40px;background:linear-gradient(to right,transparent,var(--bg));pointer-events:none;border-radius:0 var(--r) var(--r) 0;"></div>
+      </div>
+      <div id="feat-dots" style="display:flex;justify-content:center;gap:5px;margin-top:10px;"></div>
+    </div>
     <div class="section" style="padding-top:24px;"><div class="sec-hd"><span class="sec-title">Все заведения</span><span id="count-label" class="sec-count"></span></div>
       <div style="background:var(--forest-lt);border:1.5px solid var(--forest-md);border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:9px;">
         <span style="font-size:18px;flex-shrink:0;">👥</span>
@@ -398,9 +405,9 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
           <div style="font-size:11px;color:#856404;opacity:.8;margin-top:2px;">Действующие клиенты сохраняют свою цену навсегда</div>
         </div>
       </div>
-      <div class="tier-card" onclick="openSubmit('starter')"><div class="tier-ico">🌱</div><div class="tier-info"><div class="tier-name">Старт</div><div class="tier-desc">Карточка, адрес, телефон, часы, часы</div></div><div><div class="tier-price">490 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
+      <div class="tier-card" onclick="openSubmit('starter')"><div class="tier-ico">🌱</div><div class="tier-info"><div class="tier-name">Старт</div><div class="tier-desc">Карточка, адрес, телефон, часы</div></div><div><div class="tier-price">490 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
 
-      <div class="tier-card" onclick="openSubmit('top')"><div class="tier-ico">👑</div><div class="tier-info"><div class="tier-name">Топ</div><div class="tier-desc">Топ списка + Рекомендуем + акции</div></div><div><div class="tier-price">4 490 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
+      <div class="tier-card" onclick="openSubmit('top')"><div class="tier-ico">👑</div><div class="tier-info"><div class="tier-name">Топ</div><div class="tier-desc">Топ списка + блок «Рекомендуем» + акции</div></div><div><div class="tier-price">990 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
     </div>
     <div style="text-align:center;padding:16px 0 6px;"><button id="admin-dot-btn" onclick="openAdmin()" style="width:28px;height:28px;border-radius:50%;border:none;background:var(--bg4);opacity:0.3;cursor:pointer;font-size:0;" aria-label="admin">·</button></div>
     <div class="pb-safe"></div>
@@ -456,7 +463,7 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
     <div class="tiers-choice" id="tiers-choice">
       <div class="tier-opt chosen" data-tier="starter" onclick="chooseTier(this)"><div class="tier-opt-ico">🌱</div><div class="tier-opt-info"><div class="tier-opt-name">Старт</div><div class="tier-opt-desc">Карточка, адрес, телефон, часы</div></div><div><div class="tier-opt-price">490 ₽<span>/ мес</span></div></div><div class="tier-opt-mark"></div></div>
 
-      <div class="tier-opt" data-tier="top" onclick="chooseTier(this)"><div class="tier-opt-ico">👑</div><div class="tier-opt-info"><div class="tier-opt-name">Топ</div><div class="tier-opt-desc">Всё + первое место</div></div><div><div class="tier-opt-price">4 490 ₽<span>/ мес</span></div></div><div class="tier-opt-mark"></div></div>
+      <div class="tier-opt" data-tier="top" onclick="chooseTier(this)"><div class="tier-opt-ico">👑</div><div class="tier-opt-info"><div class="tier-opt-name">Топ</div><div class="tier-opt-desc">Топ + Рекомендуем + акции</div></div><div><div class="tier-opt-price">990 ₽<span>/ мес</span></div></div><div class="tier-opt-mark"></div></div>
     </div>
     <button class="submit-btn" onclick="submitForm()"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6z"/></svg>Отправить заявку</button>
     <div class="submit-legal">Нажимая кнопку, вы соглашаетесь на обработку данных.<br>Свяжемся в течение 2 часов.</div>
@@ -605,7 +612,13 @@ function getFiltered() {
 
 function renderFeatured() {
   const feat = places.filter(p=>p.featured && p.tier==='top').slice(0,6);
-  document.getElementById('featured-row').innerHTML = feat.length ? feat.map(p=>`
+  const dotsEl = document.getElementById('feat-dots');
+  if (!feat.length) {
+    document.getElementById('featured-row').innerHTML = '<div style="padding:20px;color:var(--ink3);font-size:13px;">Нет рекомендованных заведений</div>';
+    if (dotsEl) dotsEl.innerHTML = '';
+    return;
+  }
+  document.getElementById('featured-row').innerHTML = feat.map(p=>`
     <div class="fc fade-up" onclick="openDetail(${p.id})">
       <div class="fc-img">${p.emoji||'🍽️'}
         <div class="badge-halal">☪ Халяль</div>
@@ -616,7 +629,24 @@ function renderFeatured() {
         <div class="fc-meta"><span class="fc-cat">${p.category}</span>${p.votes_up>0?`<div class="rating">${starSVG()}${votePct(p)}%</div>`:''}</div>
         <div class="chips">${openChip(p.hours)}<span class="chip ch-gray">📍${p.address.split(',')[0]}</span></div>
       </div>
-    </div>`).join('') : '<div style="padding:20px;color:var(--ink3);font-size:13px;">Нет рекомендованных</div>';
+    </div>`).join('');
+  // Точки-индикаторы если больше 1
+  if (dotsEl) {
+    if (feat.length > 1) {
+      dotsEl.innerHTML = feat.map((_,i)=>`<div style="width:${i===0?'20px':'6px'};height:6px;border-radius:3px;background:${i===0?'var(--forest)':'var(--border)'};transition:all .3s;" id="fdot-${i}"></div>`).join('');
+      // Следить за скроллом
+      const row = document.getElementById('featured-row');
+      row.addEventListener('scroll', () => {
+        const idx = Math.round(row.scrollLeft / 222);
+        feat.forEach((_,i) => {
+          const d = document.getElementById('fdot-'+i);
+          if (d) { d.style.width = i===idx?'20px':'6px'; d.style.background = i===idx?'var(--forest)':'var(--border)'; }
+        });
+      }, {passive:true});
+    } else {
+      dotsEl.innerHTML = '';
+    }
+  }
 }
 
 function renderList() {

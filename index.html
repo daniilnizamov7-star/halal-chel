@@ -256,6 +256,35 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
 .tier-card.featured .tier-price-sub{color:rgba(255,255,255,.5);}
 
 
+
+/* ЗАМОРОЗКА И ПРЕДУПРЕЖДЕНИЯ */
+.lc-frozen{opacity:.5;pointer-events:none;position:relative;}
+.lc-frozen::after{content:'🔒 Приостановлено';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(245,242,235,.85);font-size:12px;font-weight:800;color:var(--ink3);border-radius:var(--r);pointer-events:none;}
+.lc-warning-bar{background:linear-gradient(90deg,#f59e0b,#d97706);color:#fff;font-size:10px;font-weight:800;padding:4px 14px;letter-spacing:.3px;display:flex;align-items:center;gap:6px;}
+.lc-immune-bar{background:linear-gradient(90deg,#3b82f6,#2563eb);color:#fff;font-size:10px;font-weight:800;padding:4px 14px;letter-spacing:.3px;}
+
+/* Предупреждение в детальной */
+.detail-warning-bar{background:#fff3cd;border:1.5px solid #f0d060;border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.detail-warning-ico{font-size:22px;flex-shrink:0;}
+.detail-warning-text{font-size:12px;font-weight:700;color:#856404;line-height:1.5;}
+
+/* Карточка предупреждения в админке */
+.warn-card{background:var(--bg2);border:1.5px solid #f0d060;border-radius:var(--r);margin:10px 16px 0;overflow:hidden;}
+.warn-card.halal{border-color:#f2c4c0;}
+.warn-card.frozen{border-color:var(--ink3);}
+.warn-card-head{padding:12px 14px 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.warn-card-name{font-size:14px;font-weight:800;}
+.warn-card-meta{font-size:11px;color:var(--ink3);margin-top:2px;}
+.warn-timer{font-size:13px;font-weight:800;color:#856404;}
+.warn-timer.expired{color:var(--red);}
+.warn-card-body{padding:0 14px 10px;}
+.warn-reason{font-size:12px;color:var(--ink2);line-height:1.5;}
+.warn-actions{display:flex;gap:6px;padding:10px 14px 12px;border-top:1px solid var(--border);}
+.warn-btn{flex:1;border:none;border-radius:9px;padding:9px 6px;font-family:'Manrope',sans-serif;font-size:11px;font-weight:800;cursor:pointer;transition:opacity .17s;}
+.warn-btn-resolve{background:var(--forest-lt);color:var(--forest);}
+.warn-btn-freeze{background:var(--red-lt);color:var(--red);}
+.warn-btn-restore{background:var(--forest);color:#fff;}
+.warn-btn-delete{background:var(--red);color:#fff;}
 /* REVIEW MODAL */
 .review-overlay{position:fixed;inset:0;max-width:430px;margin:0 auto;background:rgba(13,27,15,.5);z-index:450;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:flex-end;}
 .review-overlay.open{opacity:1;pointer-events:all;}
@@ -436,7 +465,7 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
           <div style="font-size:11px;color:#856404;opacity:.8;margin-top:2px;">Действующие клиенты сохраняют свою цену навсегда</div>
         </div>
       </div>
-      <div class="tier-card" onclick="openSubmit('starter')"><div class="tier-ico">🌱</div><div class="tier-info"><div class="tier-name">Старт</div><div class="tier-desc">Карточка, адрес, телефон, часы</div></div><div><div class="tier-price">490 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
+      <div class="tier-card" onclick="openSubmit('starter')"><div class="tier-ico">🌱</div><div class="tier-info"><div class="tier-name">Старт</div><div class="tier-desc">Карточка, адрес, телефон — бесплатно</div></div><div><div class="tier-price">Бесплатно</div><div class="tier-price-sub">навсегда</div></div></div>
 
       <div class="tier-card" onclick="openSubmit('top')"><div class="tier-ico">👑</div><div class="tier-info"><div class="tier-name">Топ</div><div class="tier-desc">Топ списка + блок «Рекомендуем» + акции</div></div><div><div class="tier-price">990 ₽</div><div class="tier-price-sub">/ месяц</div></div></div>
     </div>
@@ -492,12 +521,26 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
       ⏳ Цены действительны до 1 сентября 2026. Действующие клиенты сохраняют цену навсегда.
     </div>
     <div class="tiers-choice" id="tiers-choice">
-      <div class="tier-opt chosen" data-tier="starter" onclick="chooseTier(this)"><div class="tier-opt-ico">🌱</div><div class="tier-opt-info"><div class="tier-opt-name">Старт</div><div class="tier-opt-desc">Карточка, адрес, телефон, часы</div></div><div><div class="tier-opt-price">490 ₽<span>/ мес</span></div></div><div class="tier-opt-mark"></div></div>
+      <div class="tier-opt chosen" data-tier="starter" onclick="chooseTier(this)"><div class="tier-opt-ico">🌱</div><div class="tier-opt-info"><div class="tier-opt-name">Старт</div><div class="tier-opt-desc">Карточка, адрес, телефон — бесплатно</div></div><div><div class="tier-opt-price">Бесплатно<span>навсегда</span></div></div><div class="tier-opt-mark"></div></div>
 
       <div class="tier-opt" data-tier="top" onclick="chooseTier(this)"><div class="tier-opt-ico">👑</div><div class="tier-opt-info"><div class="tier-opt-name">Топ</div><div class="tier-opt-desc">Топ + Рекомендуем + акции</div></div><div><div class="tier-opt-price">990 ₽<span>/ мес</span></div></div><div class="tier-opt-mark"></div></div>
     </div>
     <button class="submit-btn" onclick="submitForm()"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6z"/></svg>Отправить заявку</button>
-    <div class="submit-legal">Нажимая кнопку, вы соглашаетесь на обработку данных.<br>Свяжемся в течение 2 часов.</div>
+    <div style="background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:800;color:var(--ink);margin-bottom:8px;">Условия размещения</div>
+      <div style="font-size:11px;color:var(--ink2);line-height:1.7;margin-bottom:10px;">
+        Размещая заведение, вы подтверждаете что:<br>
+        • Продукция и кухня соответствуют нормам халяль<br>
+        • Алкоголь и свинина не используются и не продаются<br>
+        • Информация в анкете достоверна<br><br>
+        Халяль Чел вправе скрыть или удалить заведение при систематических жалобах на нарушение халяль или некачественный сервис.
+      </div>
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+        <input type="checkbox" id="f-agree" style="width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--forest);">
+        <span style="font-size:12px;font-weight:700;color:var(--ink);">Согласен с условиями размещения</span>
+      </label>
+    </div>
+    <div class="submit-legal">Свяжемся в течение 2 часов.</div>
   </div>
 </div>
 
@@ -523,6 +566,7 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
     <div class="admin-tabs">
       <div class="admin-tab active" data-tab="apps" onclick="setAdminTab('apps')">Заявки<span id="badge-new" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
       <div class="admin-tab" data-tab="stats" onclick="setAdminTab('stats')">📊 Стат</div>
+      <div class="admin-tab" data-tab="warnings" onclick="setAdminTab('warnings')">⚠️<span id="badge-warnings" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
       <div class="admin-tab" data-tab="feedback" onclick="setAdminTab('feedback')">💬<span id="badge-feedback" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
       <div class="admin-tab" data-tab="places" onclick="setAdminTab('places')">Заведения</div>
       <div class="admin-tab" data-tab="reviews" onclick="setAdminTab('reviews')">Отзывы<span id="badge-reviews" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
@@ -697,8 +741,15 @@ function renderList() {
     const pct = votePct(p);
     const myVote = myVotes[p.id];
     const isTop = p.tier === 'top' && p.featured;
-    return `<div class="lc fade-up" onclick="openDetail(${p.id})" style="${isTop ? 'border-color:#d4a843;box-shadow:0 2px 12px rgba(139,105,20,.15);' : ''}">
-      ${isTop ? '<div style="background:linear-gradient(90deg,var(--gold),#c8960a);color:#fff;font-size:10px;font-weight:800;padding:4px 14px;letter-spacing:.3px;">👑 РЕКОМЕНДУЕМ</div>' : ''}
+    const isFrozen = p.moderation_status === 'frozen';
+    const isWarning = p.moderation_status === 'warning';
+    const totalVotes = (p.votes_up||0) + (p.votes_down||0);
+    const isImmune = totalVotes < 10;
+    const allNegative = totalVotes > 0 && (p.votes_up||0) === 0;
+    return `<div class="lc fade-up ${isFrozen ? 'lc-frozen' : ''}" onclick="${isFrozen ? '' : 'openDetail('+p.id+')'}" style="${isTop && !isFrozen ? 'border-color:#d4a843;box-shadow:0 2px 12px rgba(139,105,20,.15);' : ''}${isFrozen ? 'cursor:default;' : ''}">
+      ${isTop && !isFrozen ? '<div style="background:linear-gradient(90deg,var(--gold),#c8960a);color:#fff;font-size:10px;font-weight:800;padding:4px 14px;letter-spacing:.3px;">👑 РЕКОМЕНДУЕМ</div>' : ''}
+      ${isWarning ? '<div class="lc-warning-bar">⚠️ На проверке — работаем над улучшением</div>' : ''}
+      ${isFrozen ? '<div class="lc-warning-bar" style="background:linear-gradient(90deg,var(--ink3),var(--ink2));">🔒 Приостановлено из-за отзывов</div>' : ''}
       <div style="display:flex;align-items:stretch;">
         <div class="lc-img">${p.emoji||'🍽️'}</div>
         <div class="lc-body">
@@ -897,7 +948,9 @@ async function submitForm() {
   const cat=document.getElementById('f-cat').value;
   const addr=document.getElementById('f-addr').value.trim();
   const phone=document.getElementById('f-phone').value.trim();
+  const agree = document.getElementById('f-agree');
   if (!name||!cat||!addr||!phone) { showToast('Заполните обязательные поля','⚠️'); return; }
+  if (agree && !agree.checked) { showToast('Примите условия размещения','⚠️'); return; }
   const btn=document.querySelector('.submit-btn');
   btn.textContent='Отправляем…'; btn.disabled=true;
   try {
@@ -941,10 +994,10 @@ function checkAdminPw() {
 function setAdminTab(tab) {
   adminTab=tab;
   document.querySelectorAll('.admin-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
-  document.getElementById('admin-panel-title').textContent = tab==='apps'?'Заявки':tab==='places'?'Заведения':tab==='reviews'?'Отзывы и жалобы':tab==='stats'?'Статистика':'Обратная связь';
+  document.getElementById('admin-panel-title').textContent = tab==='apps'?'Заявки':tab==='places'?'Заведения':tab==='reviews'?'Отзывы и жалобы':tab==='stats'?'Статистика':tab==='warnings'?'Предупреждения':'Обратная связь';
   reloadAdminTab();
 }
-function reloadAdminTab() { adminTab==='apps'?loadAdminApps():adminTab==='places'?loadAdminPlaces():adminTab==='reviews'?loadAdminReviews():adminTab==='stats'?loadAdminStats():loadAdminFeedback(); }
+function reloadAdminTab() { adminTab==='apps'?loadAdminApps():adminTab==='places'?loadAdminPlaces():adminTab==='reviews'?loadAdminReviews():adminTab==='stats'?loadAdminStats():adminTab==='warnings'?loadAdminWarnings():loadAdminFeedback(); }
 
 // ── ЗАЯВКИ ──
 let appsFilter='new';
@@ -960,7 +1013,7 @@ async function loadAdminApps() {
   } catch(e) { document.getElementById('admin-list').innerHTML=`<div class="admin-empty"><div class="admin-empty-ico">⚠️</div><div class="admin-empty-title">Ошибка</div><div class="admin-empty-desc">${e.message}</div></div>`; }
 }
 
-const tierLabel={starter:'🌱 Старт (490₽)',pro:'🌱 Старт (490₽)',top:'👑 Топ (990₽)'};
+const tierLabel={starter:'🌱 Старт (бесплатно)',pro:'🌱 Старт (бесплатно)',top:'👑 Топ (990₽)'};
 const stLabel={new:'Новая',approved:'Одобрена',rejected:'Отклонена'};
 const stClass={new:'st-new',approved:'st-approved',rejected:'st-rejected'};
 
@@ -1069,7 +1122,8 @@ function renderAdminPlaces() {
       </div>
       <div class="place-card-actions">
         <button class="app-btn btn-approve" style="font-size:11px;" onclick="openEditPlace(${p.id})">✏️ Редактировать</button>
-        <button class="app-btn ${p.status==='active'?'btn-hide':'btn-show'}" style="font-size:11px;flex:0.6;" onclick="togglePlaceStatus(${p.id},'${p.status==='active'?'hidden':'active'}')">${p.status==='active'?'🙈 Скрыть':'👁 Показать'}</button>
+        ${p.moderation_status==='active'?'<button class="app-btn" style="font-size:11px;flex:0.6;background:#fff3cd;color:#856404;" onclick="openWarnModal('+p.id+',\'warn\')">⚠️ Предупр.</button>':p.moderation_status==='warning'?'<button class="app-btn warn-btn-freeze" style="font-size:11px;flex:0.6;" onclick="openWarnModal('+p.id+',\'freeze\')">🔒 Заморозить</button>':'<button class="app-btn warn-btn-restore" style="font-size:11px;flex:0.6;" onclick="openWarnModal('+p.id+',\'restore\')">✅ Восстановить</button>'}
+        <button class="app-btn ${p.status==='active'?'btn-hide':'btn-show'}" style="font-size:11px;flex:0.5;" onclick="togglePlaceStatus(${p.id},'${p.status==='active'?'hidden':'active'}')">${p.status==='active'?'🙈 Скрыть':'👁 Показать'}</button>
         <button class="app-btn btn-reject" style="font-size:11px;flex:0.5;" onclick="deletePlace(${p.id})">🗑️</button>
       </div>
       <div style="display:flex;gap:6px;padding:0 14px 12px;">
@@ -1220,7 +1274,7 @@ function openEditPlace(id) {
     '<div class="form-group"><label class="form-label">Описание</label><textarea class="form-input" id="ef-description">'+(p.description||'')+'</textarea></div>' +
     '<div class="form-group"><label class="form-label">Соцсети</label><input class="form-input" id="ef-social" value="'+(p.social||'')+'"></div>' +
     '<div class="form-group"><label class="form-label">Акция/промо</label><input class="form-input" id="ef-promo" value="'+(p.promo||'')+'" placeholder="🎵 Живая музыка"></div>' +
-    '<div class="form-group"><label class="form-label">Тариф</label><select class="form-select" id="ef-tier" onchange="onTierChange(this.value)"><option value="starter" '+(p.tier==='starter'?'selected':'')+'>🌱 Старт (490₽)</option><option value="top" '+(p.tier==='top'?'selected':'')+'>👑 Топ (990₽)</option></select></div>' +
+    '<div class="form-group"><label class="form-label">Тариф</label><select class="form-select" id="ef-tier" onchange="onTierChange(this.value)"><option value="starter" '+(p.tier==='starter'?'selected':'')+'>🌱 Старт (бесплатно)</option><option value="top" '+(p.tier==='top'?'selected':'')+'>👑 Топ (990₽)</option></select></div>' +
     '<div class="form-group"><label class="form-label">Подписка до</label><input class="form-input" type="date" id="ef-sub-until" value="'+subVal+'"></div>' +
     '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-paid" '+(p.paid?'checked':'')+' style="width:16px;height:16px;"> Оплачено</label></div>' +
     '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-verified" '+(p.verified?'checked':'')+' style="width:16px;height:16px;"> Верифицировано</label></div>' +
@@ -1679,6 +1733,272 @@ async function markFeedbackRead(id) {
     showToast('Отмечено как прочитанное', '✅');
   } catch(e) { showToast('Ошибка','⚠️'); }
 }
+
+
+// ══════════════════════════════════════════
+// СИСТЕМА МОДЕРАЦИИ И ПРЕДУПРЕЖДЕНИЙ
+// ══════════════════════════════════════════
+
+const WARN_DAYS = 14;
+const IMMUNE_VOTES = 10;
+const WARN_THRESHOLD = 0.40; // ниже 40% → предупреждение
+const YELLOW_THRESHOLD = 0.60; // ниже 60% → жёлтая зона
+
+// Проверить рейтинг заведения и вернуть статус
+function getModerationAlert(p) {
+  const total = (p.votes_up||0) + (p.votes_down||0);
+  if (total < IMMUNE_VOTES) {
+    // Иммунитет — но если все минусы, флаг
+    if (total > 0 && (p.votes_up||0) === 0) return 'all_negative';
+    return 'immune';
+  }
+  const pct = (p.votes_up||0) / total;
+  if (pct < WARN_THRESHOLD) return 'critical'; // < 40%
+  if (pct < YELLOW_THRESHOLD) return 'yellow';  // 40-60%
+  return 'ok';
+}
+
+// Форматировать дедлайн
+function formatDeadline(iso) {
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = Math.round((d - now) / 86400000);
+  if (diff < 0) return { text: 'Истёк ' + Math.abs(diff) + ' дн. назад', expired: true };
+  if (diff === 0) return { text: 'Истекает сегодня!', expired: false };
+  return { text: 'Осталось ' + diff + ' дн.', expired: false };
+}
+
+// ── ВЫДАТЬ ПРЕДУПРЕЖДЕНИЕ ──
+async function issueWarning(placeId, reason, note) {
+  const deadline = new Date(Date.now() + WARN_DAYS * 86400000).toISOString();
+  try {
+    // Создать предупреждение
+    await sb('halal_warnings', {
+      method: 'POST', prefer: 'return=minimal',
+      body: JSON.stringify({ place_id: placeId, reason, note: note||null, deadline, status: 'active' })
+    });
+    // Обновить статус заведения
+    await sb('halal_places?id=eq.'+placeId, {
+      method: 'PATCH', prefer: 'return=minimal',
+      body: JSON.stringify({ moderation_status: 'warning', warning_at: new Date().toISOString(), warning_reason: reason })
+    });
+    // Обновить локально
+    const p = adminPlaces.find(x=>x.id===placeId);
+    if (p) { p.moderation_status='warning'; p.warning_reason=reason; }
+    const lp = places.find(x=>x.id===placeId);
+    if (lp) lp.moderation_status='warning';
+    showToast('⚠️ Предупреждение выдано — 14 дней', '⚠️');
+    renderAdminPlaces();
+    renderList();
+  } catch(e) { showToast('Ошибка: '+e.message, '⚠️'); }
+}
+
+// ── ЗАМОРОЗИТЬ ──
+async function freezePlace(placeId, note) {
+  try {
+    await sb('halal_places?id=eq.'+placeId, {
+      method: 'PATCH', prefer: 'return=minimal',
+      body: JSON.stringify({ moderation_status: 'frozen', frozen_at: new Date().toISOString(), tier: 'starter', featured: false })
+    });
+    // Закрыть активные предупреждения
+    await sb('halal_warnings?place_id=eq.'+placeId+'&status=eq.active', {
+      method: 'PATCH', prefer: 'return=minimal',
+      body: JSON.stringify({ status: 'escalated', escalated_at: new Date().toISOString() })
+    });
+    const p = adminPlaces.find(x=>x.id===placeId);
+    if (p) { p.moderation_status='frozen'; p.tier='starter'; p.featured=false; }
+    const lp = places.find(x=>x.id===placeId);
+    if (lp) { lp.moderation_status='frozen'; lp.tier='starter'; lp.featured=false; }
+    showToast('🔒 Заведение заморожено', '🔒');
+    renderAdminPlaces(); renderList();
+  } catch(e) { showToast('Ошибка: '+e.message, '⚠️'); }
+}
+
+// ── ВОССТАНОВИТЬ ──
+async function restorePlace(placeId) {
+  try {
+    await sb('halal_places?id=eq.'+placeId, {
+      method: 'PATCH', prefer: 'return=minimal',
+      body: JSON.stringify({ moderation_status: 'active', warning_at: null, frozen_at: null, warning_reason: null, tier: 'starter', featured: false })
+    });
+    await sb('halal_warnings?place_id=eq.'+placeId+'&status=neq.resolved', {
+      method: 'PATCH', prefer: 'return=minimal',
+      body: JSON.stringify({ status: 'resolved', resolved_at: new Date().toISOString() })
+    });
+    const p = adminPlaces.find(x=>x.id===placeId);
+    if (p) { p.moderation_status='active'; p.warning_reason=null; }
+    const lp = places.find(x=>x.id===placeId);
+    if (lp) lp.moderation_status='active';
+    showToast('✅ Заведение восстановлено на Старт', '✅');
+    renderAdminPlaces(); renderList();
+  } catch(e) { showToast('Ошибка: '+e.message, '⚠️'); }
+}
+
+// ── ОТКРЫТЬ МОДАЛКУ ПРЕДУПРЕЖДЕНИЯ ──
+function openWarnModal(placeId, action) {
+  const p = adminPlaces.find(x=>x.id===placeId);
+  if (!p) return;
+
+  const reasons = {
+    rating_low: '📉 Низкий рейтинг',
+    complaint_halal: '🚫 Жалоба на харам',
+    complaint_quality: '😞 Жалобы на качество',
+    manual: '📝 Ручная проверка'
+  };
+
+  let title, btns, reasonsHtml = '';
+  if (action === 'warn') {
+    title = '⚠️ Выдать предупреждение: ' + p.name;
+    reasonsHtml = Object.entries(reasons).map(([k,v]) =>
+      '<div class="complaint-opt" data-reason="'+k+'" onclick="selectComplaint(this)" style="margin-bottom:6px;">' +
+      '<div class="complaint-opt-ico">'+v.split(' ')[0]+'</div>' +
+      '<div><div class="complaint-opt-text">'+v.split(' ').slice(1).join(' ')+'</div></div></div>'
+    ).join('');
+    btns = '<button onclick="confirmWarnAction('+placeId+',\'warn\')" class="review-btn review-btn-send" style="background:#f59e0b;">Выдать предупреждение</button>';
+  } else if (action === 'freeze') {
+    title = '🔒 Заморозить: ' + p.name;
+    btns = '<button onclick="confirmWarnAction('+placeId+',\'freeze\')" class="review-btn review-btn-send" style="background:var(--red);">Заморозить</button>';
+  } else if (action === 'restore') {
+    title = '✅ Восстановить: ' + p.name;
+    btns = '<button onclick="confirmWarnAction('+placeId+',\'restore\')" class="review-btn review-btn-send">Восстановить на Старт</button>';
+  }
+
+  selectedComplaintReason = null;
+  document.getElementById('review-title').textContent = title;
+  document.getElementById('review-mode-vote').style.display = 'block';
+  document.getElementById('review-mode-complaint').style.display = 'none';
+  document.getElementById('review-text').placeholder = 'Комментарий (необязательно)…';
+  document.getElementById('review-text').value = '';
+
+  // Временно подменяем содержимое шторки
+  const sheet = document.querySelector('#review-overlay .review-sheet');
+  sheet.dataset.action = action;
+  sheet.dataset.placeId = placeId;
+  const sub = document.querySelector('#review-overlay .review-sub');
+  if (sub) sub.innerHTML = reasonsHtml || ('Действие будет применено к заведению <b>' + p.name + '</b>');
+  const btnWrap = document.querySelector('#review-overlay .review-btns');
+  if (btnWrap) btnWrap.innerHTML = '<button onclick="closeReview()" class="review-btn review-btn-skip">Отмена</button>' + btns;
+
+  document.getElementById('review-overlay').classList.add('open');
+  history.pushState({}, '', '');
+}
+
+async function confirmWarnAction(placeId, action) {
+  const note = document.getElementById('review-text').value.trim() || null;
+  closeReview();
+  if (action === 'warn') await issueWarning(placeId, selectedComplaintReason || 'manual', note);
+  else if (action === 'freeze') await freezePlace(placeId, note);
+  else if (action === 'restore') await restorePlace(placeId);
+}
+
+// ── ЗАГРУЗИТЬ ПРЕДУПРЕЖДЕНИЯ В АДМИНКЕ ──
+async function loadAdminWarnings() {
+  document.getElementById('admin-list').innerHTML = '<div class="loader"><div class="loader-spin"></div><div class="loader-text">Загружаем…</div></div>';
+  try {
+    // Активные предупреждения
+    const warnings = await sb('halal_warnings?status=eq.active&order=created_at.desc');
+    // Замороженные заведения
+    const frozen = adminPlaces.filter(p => p.moderation_status === 'frozen');
+    // Заведения в иммунитете с плохим рейтингом
+    const allNeg = places.filter(p => {
+      const total = (p.votes_up||0)+(p.votes_down||0);
+      return total > 0 && total < IMMUNE_VOTES && (p.votes_up||0) === 0;
+    });
+
+    const activeCount = warnings.length + frozen.length + allNeg.length;
+    const badge = document.getElementById('badge-warnings');
+    if (badge) { if(activeCount>0){badge.style.display='inline';badge.textContent=activeCount;}else badge.style.display='none'; }
+    document.getElementById('admin-stats-label').textContent =
+      'Предупреждений: ' + warnings.length + ' · Заморожено: ' + frozen.length;
+
+    let html = '<div style="height:8px;"></div>';
+
+    // Сигналы — все минусы в иммунитете
+    if (allNeg.length) {
+      html += '<div style="padding:0 16px;margin-bottom:4px;font-size:11px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;">🔔 Сигналы — требуют внимания</div>';
+      allNeg.forEach(p => {
+        const total = (p.votes_up||0)+(p.votes_down||0);
+        html += '<div class="warn-card" style="border-color:#3b82f6;">' +
+          '<div class="warn-card-head">' +
+            '<div><div class="warn-card-name">' + (p.emoji||'🍽️') + ' ' + p.name + '</div>' +
+            '<div class="warn-card-meta">Иммунитет · ' + total + '/'+IMMUNE_VOTES+' голосов · все отрицательные</div></div>' +
+            '<div style="font-size:20px;">😟</div>' +
+          '</div>' +
+          '<div class="warn-actions">' +
+            '<button class="warn-btn warn-btn-resolve" onclick="openWarnModal('+p.id+',\'warn\')">⚠️ Выдать предупреждение</button>' +
+            '<button class="warn-btn" style="background:var(--bg3);color:var(--ink2);" onclick="showToast(\'Наблюдаем за заведением\',\'👁\')">👁 Наблюдать</button>' +
+          '</div>' +
+        '</div>';
+      });
+    }
+
+    // Активные предупреждения
+    if (warnings.length) {
+      html += '<div style="padding:0 16px;margin:8px 0 4px;font-size:11px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;">⚠️ Активные предупреждения</div>';
+      warnings.forEach(w => {
+        const p = adminPlaces.find(x=>x.id===w.place_id);
+        const name = p ? (p.emoji||'🍽️')+' '+p.name : 'ID '+w.place_id;
+        const dl = formatDeadline(w.deadline);
+        const reasonLabels = {rating_low:'📉 Низкий рейтинг', complaint_halal:'🚫 Харам', complaint_quality:'😞 Качество', manual:'📝 Вручную'};
+        html += '<div class="warn-card">' +
+          '<div class="warn-card-head">' +
+            '<div><div class="warn-card-name">' + name + '</div>' +
+            '<div class="warn-card-meta">' + (reasonLabels[w.reason]||w.reason) + (w.note?' · '+w.note:'') + '</div></div>' +
+            '<div class="warn-timer' + (dl.expired?' expired':'') + '">' + dl.text + '</div>' +
+          '</div>' +
+          '<div class="warn-actions">' +
+            '<button class="warn-btn warn-btn-resolve" onclick="openWarnModal('+w.place_id+',\'restore\')">✅ Исправились</button>' +
+            '<button class="warn-btn warn-btn-freeze" onclick="openWarnModal('+w.place_id+',\'freeze\')">🔒 Заморозить</button>' +
+          '</div>' +
+        '</div>';
+      });
+    }
+
+    // Замороженные
+    if (frozen.length) {
+      html += '<div style="padding:0 16px;margin:8px 0 4px;font-size:11px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;">🔒 Заморожены</div>';
+      frozen.forEach(p => {
+        const frozenDays = p.frozen_at ? Math.round((Date.now()-new Date(p.frozen_at))/86400000) : 0;
+        html += '<div class="warn-card frozen">' +
+          '<div class="warn-card-head">' +
+            '<div><div class="warn-card-name">' + (p.emoji||'🍽️') + ' ' + p.name + '</div>' +
+            '<div class="warn-card-meta">Заморожено ' + frozenDays + ' дн. назад</div></div>' +
+            '<div style="font-size:20px;">🔒</div>' +
+          '</div>' +
+          '<div class="warn-actions">' +
+            '<button class="warn-btn warn-btn-restore" onclick="openWarnModal('+p.id+',\'restore\')">✅ Восстановить</button>' +
+            '<button class="warn-btn warn-btn-delete" onclick="deletePlace('+p.id+')">🗑️ Удалить</button>' +
+          '</div>' +
+        '</div>';
+      });
+    }
+
+    if (!warnings.length && !frozen.length && !allNeg.length) {
+      html += '<div class="admin-empty"><div class="admin-empty-ico">✅</div><div class="admin-empty-title">Всё чисто!</div><div class="admin-empty-desc">Нет активных предупреждений и жалоб</div></div>';
+    }
+
+    html += '<div style="height:20px;"></div>';
+    document.getElementById('admin-list').innerHTML = html;
+  } catch(e) {
+    document.getElementById('admin-list').innerHTML = '<div class="admin-empty"><div class="admin-empty-ico">⚠️</div><div class="admin-empty-title">Ошибка</div><div class="admin-empty-desc">'+e.message+'</div></div>';
+  }
+}
+
+// ── АВТОПРОВЕРКА РЕЙТИНГА при загрузке ──
+function checkRatings() {
+  if (!adminPlaces.length) return;
+  places.forEach(p => {
+    if (p.moderation_status !== 'active') return;
+    const alert = getModerationAlert(p);
+    if (alert === 'all_negative') {
+      // Обновить бейдж предупреждений
+      const badge = document.getElementById('badge-warnings');
+      if (badge) { badge.style.display='inline'; badge.textContent=parseInt(badge.textContent||'0')+1; }
+    }
+  });
+}
+
+// checkRatings вызывается внутри loadAdminPlaces напрямую
 
 
 init();

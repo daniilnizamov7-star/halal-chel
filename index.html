@@ -437,8 +437,8 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
       <button class="hero-cta" onclick="event.stopPropagation();openSubmit()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>Разместить бесплатно</button>
       <div class="hero-stats">
         <div class="hero-stat"><div class="hero-stat-n" id="stat-count">…</div><div class="hero-stat-l">заведений</div></div>
-        <div class="hero-stat"><div class="hero-stat-n">100%</div><div class="hero-stat-l">только халяль</div></div>
-        <div class="hero-stat"><div class="hero-stat-n">от 0 ₽</div><div class="hero-stat-l">первый месяц</div></div>
+        <div class="hero-stat"><div class="hero-stat-n" id="stat-today">…</div><div class="hero-stat-l">сегодня здесь</div></div>
+        <div class="hero-stat"><div class="hero-stat-n" id="stat-month">…</div><div class="hero-stat-l">за месяц</div></div>
       </div>
     </div>
     
@@ -1544,11 +1544,17 @@ async function loadPublicStats() {
     document.getElementById('stat-today').textContent = todayUniq > 0 ? formatNum(todayUniq) : '…';
     document.getElementById('stat-month').textContent = monthUniq > 0 ? formatNum(monthUniq) : '…';
 
+    // Обновить hero счётчики
+    const todayEl = document.getElementById('stat-today');
+    const monthEl = document.getElementById('stat-month');
+    if (todayEl) todayEl.textContent = todayUniq > 0 ? formatNum(todayUniq) : '0';
+    if (monthEl) monthEl.textContent = monthUniq > 0 ? formatNum(monthUniq) : '0';
+
     // Живой счётчик
     const counterText = document.getElementById('counter-text');
     if (counterText) {
       if (monthUniq === 0) {
-        counterText.textContent = 'Будьте первыми в каталоге!';
+        counterText.textContent = 'Будьте первыми кто найдёт нас! 🌱';
       } else if (todayUniq === 0) {
         counterText.textContent = monthUniq + ' человек нашли халяль через нас за месяц';
       } else {

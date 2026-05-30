@@ -8,6 +8,7 @@
 <meta name="description" content="Лучший гид по халяль-заведениям Челябинска. Рестораны, кафе, шаурма — только проверенное.">
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/icon-192.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -408,6 +409,7 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
     <div class="nav-item active" id="nav-main" onclick="navTo('main')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Главная</div>
     <div class="nav-item" id="nav-fav" onclick="navTo('fav')"><span class="nav-badge"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>Избранное</div>
     <div class="nav-item" onclick="openSubmit()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Разместить</div>
+    <div class="nav-item" onclick="openQR()"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="5" y="5" width="3" height="3" fill="currentColor"/><rect x="16" y="5" width="3" height="3" fill="currentColor"/><rect x="5" y="16" width="3" height="3" fill="currentColor"/><line x1="14" y1="14" x2="14" y2="14"/><line x1="17" y1="14" x2="17" y2="14"/><line x1="20" y1="14" x2="20" y2="14"/><line x1="14" y1="17" x2="14" y2="17"/><line x1="17" y1="17" x2="20" y2="17"/><line x1="20" y1="20" x2="14" y2="20"/><line x1="17" y1="20" x2="17" y2="17"/></svg>QR-код</div>
   </div>
 </div>
 
@@ -602,7 +604,7 @@ function getFiltered() {
 }
 
 function renderFeatured() {
-  const feat = places.filter(p=>p.featured || p.tier==='pro' || p.tier==='top').slice(0,6);
+  const feat = places.filter(p=>p.featured && p.tier==='top').slice(0,6);
   document.getElementById('featured-row').innerHTML = feat.length ? feat.map(p=>`
     <div class="fc fade-up" onclick="openDetail(${p.id})">
       <div class="fc-img">${p.emoji||'🍽️'}
@@ -703,7 +705,7 @@ function openDetail(id) {
     <div class="det-sec-label">Контакты</div>
     <div class="det-contacts">
       <a class="det-row" href="tel:${p.phone}"><div class="det-ico ico-g"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6z"/></svg></div><div><div class="det-row-label">Телефон</div><div class="det-row-val">${p.phone}</div></div></a>
-      <div class="det-row" onclick="window.open('https://yandex.ru/maps/?text='+encodeURIComponent('${p.address}, Челябинск'),'_blank')"><div class="det-ico ico-b"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="det-row-label">Адрес</div><div class="det-row-val">${p.address}</div></div></div>
+      <div class="det-row" onclick="window.open('https://2gis.ru/chelyabinsk/search/'+encodeURIComponent(p.address),'_blank')"><div class="det-ico ico-b"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="det-row-label">Адрес</div><div class="det-row-val">${p.address}</div></div></div>
       ${p.hours?`<div class="det-row"><div class="det-ico ico-g"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="det-row-label">Работает</div><div class="det-row-val">${p.hours==='00:00–23:59'?'Круглосуточно':p.hours}</div></div></div>`:''}
       ${p.social?`<div class="det-row" onclick="window.open('https://instagram.com/${p.social.replace('@','')}','_blank')"><div class="det-ico ico-gold"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div><div><div class="det-row-label">Instagram</div><div class="det-row-val">${p.social}</div></div></div>`:''}
     </div>
@@ -724,7 +726,7 @@ function openDetail(id) {
     </div>
     <div class="det-actions">
       <a class="btn-call" href="tel:${p.phone}"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6z"/></svg>Позвонить</a>
-      <a class="btn-map" href="#" onclick="event.preventDefault();window.open('https://yandex.ru/maps/?text='+encodeURIComponent('${p.address}, Челябинск'),'_blank')"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>На карте</a>
+      <a class="btn-map" href="#" onclick="event.preventDefault();window.open('https://2gis.ru/chelyabinsk/search/'+encodeURIComponent(p.address),'_blank')"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>На карте</a>
     </div>`;
   document.getElementById('screen-detail').classList.add('open');
   history.pushState({},'','');
@@ -980,7 +982,7 @@ function renderAdminPlaces() {
       </div>
       <div style="display:flex;gap:6px;padding:0 14px 12px;">
         <button class="app-btn" style="font-size:11px;flex:1;background:var(--forest-lt);color:var(--forest);" onclick="extendSub(${p.id},30)">+30 дней</button>
-        <button class="app-btn" style="font-size:11px;flex:1;background:${p.paid?'var(--bg3)':'var(--forest)'};color:${p.paid?'var(--ink3)':'#fff'};" onclick="togglePaid(${p.id},${p.paid?'false':'true'})">${p.paid?'❌ Не оплачено':'✅ Оплачено'}</button>
+        <button class="app-btn" style="font-size:11px;flex:1;background:${p.paid?'var(--forest)':'var(--red-lt)'};color:${p.paid?'#fff':'var(--red)'};" onclick="togglePaid(${p.id},${!p.paid})">${p.paid?'✅ Оплачено':'❌ Не оплачено'}</button>
       </div>
     </div>`).join('') + '<div style="height:20px;"></div>';
 }
@@ -1060,7 +1062,7 @@ function openEditPlace(id) {
     '<div class="form-group"><label class="form-label">Подписка до</label><input class="form-input" type="date" id="ef-sub-until" value="'+subVal+'"></div>' +
     '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-paid" '+(p.paid?'checked':'')+' style="width:16px;height:16px;"> Оплачено</label></div>' +
     '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-verified" '+(p.verified?'checked':'')+' style="width:16px;height:16px;"> Верифицировано</label></div>' +
-    '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-featured" '+(p.featured?'checked':'')+' style="width:16px;height:16px;"> В блоке «Рекомендуем»</label></div>';
+    '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-featured" '+(p.featured&&p.tier==="top"?'checked':'')+' '+(p.tier!=="top"?'disabled title="Только для тарифа Топ"':'')+' style="width:16px;height:16px;opacity:'+(p.tier!=="top"?'0.4':'1')+'"> В блоке «Рекомендуем» '+(p.tier!=="top"?'<span style="font-size:10px;color:var(--ink3);">(только Топ)</span>':'')+' </label></div>';
   document.getElementById('edit-overlay').classList.add('open');
 }
 
@@ -1078,7 +1080,7 @@ async function saveEdit() {
     promo: document.getElementById('ef-promo').value.trim()||null,
     tier: document.getElementById('ef-tier').value,
     verified: document.getElementById('ef-verified').checked,
-    featured: document.getElementById('ef-featured').checked,
+    featured: document.getElementById('ef-tier').value === 'top' && document.getElementById('ef-featured').checked,
     subscription_until: document.getElementById('ef-sub-until').value || null,
     paid: document.getElementById('ef-paid').checked,
   };
@@ -1125,8 +1127,61 @@ window.addEventListener('popstate',()=>{
   if(document.getElementById('screen-submit').classList.contains('open')){closeSubmit();return;}
 });
 
+// ══════════════════════════════════════════
+// QR КОД
+// ══════════════════════════════════════════
+const APP_URL = 'https://halal-chel.vercel.app';
+
+function openQR() {
+  const container = document.getElementById('qr-container');
+  document.getElementById('qr-url').textContent = APP_URL;
+  container.innerHTML = '';
+  new QRCode(container, {
+    text: APP_URL,
+    width: 220,
+    height: 220,
+    colorDark: '#1a4d2e',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+  document.getElementById('qr-overlay').classList.add('open');
+  history.pushState({}, '', '');
+}
+
+function closeQR() {
+  document.getElementById('qr-overlay').classList.remove('open');
+}
+
+function shareQR() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Халяль Чел — каталог халяль заведений Челябинска',
+      text: 'Ищешь халяль в Челябинске? Все заведения в одном месте 👇',
+      url: APP_URL
+    });
+  } else {
+    navigator.clipboard.writeText(APP_URL);
+    showToast('Ссылка скопирована 📋', '📋');
+  }
+}
+
 init();
 </script>
+<!-- ════ QR МОДАЛКА ════ -->
+<div class="edit-overlay" id="qr-overlay" onclick="if(event.target===this)closeQR()">
+  <div class="edit-sheet" style="text-align:center;">
+    <div class="edit-handle"></div>
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:6px;">QR-код приложения</div>
+    <div style="font-size:13px;color:var(--ink2);margin-bottom:20px;line-height:1.6;">Распечатайте и разместите в заведении.<br>Гости сканируют — находят вас в каталоге.</div>
+    <div id="qr-container" style="display:flex;justify-content:center;margin-bottom:16px;"></div>
+    <div style="background:var(--bg3);border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:20px;word-break:break-all;" id="qr-url"></div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="shareQR()" style="flex:1;background:var(--forest);color:#fff;border:none;border-radius:12px;padding:13px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;cursor:pointer;">📤 Поделиться</button>
+      <button onclick="closeQR()" style="flex:1;background:var(--bg3);color:var(--ink2);border:none;border-radius:12px;padding:13px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Закрыть</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /shell -->
 </body>
 </html>

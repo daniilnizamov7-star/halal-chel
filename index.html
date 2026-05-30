@@ -367,6 +367,7 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
 .edit-btn-cancel{background:var(--bg3);color:var(--ink2);}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.2);}50%{box-shadow:0 0 0 6px rgba(34,197,94,.1);}}
 .fade-up{animation:fadeUp .25s ease forwards;}
 </style>
 </head>
@@ -413,7 +414,15 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
     </div>
     
     <div class="section" style="padding-top:24px;"><div class="sec-hd"><span class="sec-title">Все заведения</span><span id="count-label" class="sec-count"></span></div>
-      <div style="background:var(--forest-lt);border:1.5px solid var(--forest-md);border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:9px;">
+      <!-- Живой счётчик -->
+    <div id="live-counter" style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:12px 16px;margin-bottom:14px;">
+      <div style="width:8px;height:8px;border-radius:50%;background:#22c55e;flex-shrink:0;box-shadow:0 0 0 3px rgba(34,197,94,.2);animation:pulse-dot 2s infinite;"></div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:800;color:var(--ink);" id="counter-text">Загружаем статистику…</div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:1px;">Реальные данные · обновляется каждый день</div>
+      </div>
+    </div>
+    <div style="background:var(--forest-lt);border:1.5px solid var(--forest-md);border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:9px;">
         <span style="font-size:18px;flex-shrink:0;">👥</span>
         <span style="font-size:12px;color:var(--forest);font-weight:600;line-height:1.5;">Место в списке определяют посетители — чем больше рекомендаций 👍, тем выше заведение</span>
       </div><div id="list-container"><div class="loader"><div class="loader-spin"></div><div class="loader-text">Загружаем заведения…</div></div></div></div>
@@ -513,8 +522,10 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
     </div>
     <div class="admin-tabs">
       <div class="admin-tab active" data-tab="apps" onclick="setAdminTab('apps')">Заявки<span id="badge-new" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
+      <div class="admin-tab" data-tab="stats" onclick="setAdminTab('stats')">📊 Стат</div>
       <div class="admin-tab" data-tab="places" onclick="setAdminTab('places')">Заведения</div>
       <div class="admin-tab" data-tab="reviews" onclick="setAdminTab('reviews')">Отзывы<span id="badge-reviews" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
+      <div class="admin-tab" data-tab="stats" onclick="setAdminTab('stats')">📊 Стат</div>
     </div>
     <div class="admin-scroll" id="admin-list"></div>
     <div class="pb-safe"></div>
@@ -571,6 +582,8 @@ async function init() {
   updateTime();
   setInterval(updateTime, 30000);
   await loadPlaces();
+  loadPublicStats();
+  trackAppVisit();
 }
 
 async function loadPlaces() {
@@ -791,8 +804,8 @@ function openDetail(id) {
     </div>`;
   document.getElementById('screen-detail').classList.add('open');
   history.pushState({},'','');
-  // Загрузить отзывы
   loadReviews(id);
+  trackView(id);
 }
 function closeDetail() { document.getElementById('screen-detail').classList.remove('open'); }
 
@@ -912,10 +925,10 @@ function checkAdminPw() {
 function setAdminTab(tab) {
   adminTab=tab;
   document.querySelectorAll('.admin-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
-  document.getElementById('admin-panel-title').textContent = tab==='apps'?'Заявки':tab==='places'?'Заведения':'Отзывы и жалобы';
+  document.getElementById('admin-panel-title').textContent = tab==='apps'?'Заявки':tab==='places'?'Заведения':tab==='reviews'?'Отзывы и жалобы':'Статистика';
   reloadAdminTab();
 }
-function reloadAdminTab() { adminTab==='apps'?loadAdminApps():adminTab==='places'?loadAdminPlaces():loadAdminReviews(); }
+function reloadAdminTab() { adminTab==='apps'?loadAdminApps():adminTab==='places'?loadAdminPlaces():adminTab==='reviews'?loadAdminReviews():loadAdminStats(); }
 
 // ── ЗАЯВКИ ──
 let appsFilter='new';
@@ -1414,6 +1427,155 @@ async function loadReviews(placeId) {
       }).join('');
     detBody.appendChild(block);
   } catch(e) { /* тихо */ }
+}
+
+
+// ══════════════════════════════════════════
+// СТАТИСТИКА ПРОСМОТРОВ
+// ══════════════════════════════════════════
+
+// Записать просмотр заведения
+async function trackView(placeId) {
+  try {
+    await sb('halal_views', {
+      method: 'POST', prefer: 'return=minimal',
+      body: JSON.stringify({ place_id: placeId, viewer_key: voterKey })
+    });
+  } catch(e) { /* тихо — не мешаем пользователю */ }
+}
+
+// Записать визит на главную
+async function trackAppVisit() {
+  try {
+    // place_id = null означает просмотр самого приложения
+    await sb('halal_views', {
+      method: 'POST', prefer: 'return=minimal',
+      body: JSON.stringify({ place_id: null, viewer_key: voterKey })
+    });
+  } catch(e) { /* тихо */ }
+}
+
+// Загрузить общую статистику для hero
+async function loadPublicStats() {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const monthAgo = new Date(Date.now() - 30*86400000).toISOString().split('T')[0];
+
+    // Уникальных за сегодня
+    const todayViews = await sb('halal_views?created_at=gte.' + today + 'T00:00:00&select=viewer_key');
+    const todayUniq = new Set(todayViews.map(v=>v.viewer_key)).size;
+
+    // Уникальных за месяц
+    const monthViews = await sb('halal_views?created_at=gte.' + monthAgo + 'T00:00:00&select=viewer_key');
+    const monthUniq = new Set(monthViews.map(v=>v.viewer_key)).size;
+
+    // Обновить hero
+    document.getElementById('stat-today').textContent = todayUniq > 0 ? formatNum(todayUniq) : '…';
+    document.getElementById('stat-month').textContent = monthUniq > 0 ? formatNum(monthUniq) : '…';
+
+    // Живой счётчик
+    const counterText = document.getElementById('counter-text');
+    if (counterText) {
+      if (monthUniq === 0) {
+        counterText.textContent = 'Будьте первыми в каталоге!';
+      } else if (todayUniq === 0) {
+        counterText.textContent = monthUniq + ' человек нашли халяль через нас за месяц';
+      } else {
+        counterText.textContent = 'Сегодня ' + todayUniq + ' человек ищут халяль · ' + monthUniq + ' за месяц';
+      }
+    }
+  } catch(e) { /* тихо */ }
+}
+
+function formatNum(n) {
+  if (n >= 1000) return (n/1000).toFixed(1).replace('.0','') + 'к';
+  return n.toString();
+}
+
+// ── СТАТИСТИКА В АДМИНКЕ ──
+async function loadAdminStats() {
+  document.getElementById('admin-list').innerHTML = '<div class="loader"><div class="loader-spin"></div><div class="loader-text">Загружаем…</div></div>';
+  try {
+    const monthAgo = new Date(Date.now() - 30*86400000).toISOString().split('T')[0];
+    const allViews = await sb('halal_places?status=eq.active&select=id,name,emoji,tier');
+    
+    // Все просмотры за месяц
+    const views = await sb('halal_views?created_at=gte.' + monthAgo + 'T00:00:00&select=place_id,viewer_key,created_at');
+    
+    // Общая статистика
+    const totalViews = views.length;
+    const totalUniq = new Set(views.map(v=>v.viewer_key)).size;
+    const appViews = views.filter(v=>!v.place_id);
+    const appUniq = new Set(appViews.map(v=>v.viewer_key)).size;
+
+    // По заведениям
+    const byPlace = {};
+    views.filter(v=>v.place_id).forEach(v => {
+      if (!byPlace[v.place_id]) byPlace[v.place_id] = {total:0, uniq:new Set()};
+      byPlace[v.place_id].total++;
+      byPlace[v.place_id].uniq.add(v.viewer_key);
+    });
+
+    // Сортировка по просмотрам
+    const sorted = Object.entries(byPlace)
+      .map(([id, d]) => ({id:parseInt(id), total:d.total, uniq:d.uniq.size}))
+      .sort((a,b) => b.total - a.total);
+
+    document.getElementById('admin-stats-label').textContent = 'За 30 дней · ' + totalViews + ' просм · ' + totalUniq + ' уник.';
+
+    let html = '<div style="padding:16px;">';
+    
+    // Общий блок
+    html += '<div style="background:var(--forest);border-radius:16px;padding:16px;margin-bottom:16px;color:#fff;">' +
+      '<div style="font-size:12px;opacity:.7;margin-bottom:10px;font-weight:700;letter-spacing:.5px;">ОБЩАЯ СТАТИСТИКА · 30 ДНЕЙ</div>' +
+      '<div style="display:flex;gap:0;">' +
+        '<div style="flex:1;text-align:center;border-right:1px solid rgba(255,255,255,.15);">' +
+          '<div style="font-size:28px;font-weight:800;font-family:Playfair Display,serif;">' + formatNum(totalViews) + '</div>' +
+          '<div style="font-size:10px;opacity:.6;margin-top:2px;font-weight:600;">ПРОСМОТРОВ</div>' +
+        '</div>' +
+        '<div style="flex:1;text-align:center;border-right:1px solid rgba(255,255,255,.15);">' +
+          '<div style="font-size:28px;font-weight:800;font-family:Playfair Display,serif;">' + formatNum(totalUniq) + '</div>' +
+          '<div style="font-size:10px;opacity:.6;margin-top:2px;font-weight:600;">УНИКАЛЬНЫХ</div>' +
+        '</div>' +
+        '<div style="flex:1;text-align:center;">' +
+          '<div style="font-size:28px;font-weight:800;font-family:Playfair Display,serif;">' + formatNum(appUniq) + '</div>' +
+          '<div style="font-size:10px;opacity:.6;margin-top:2px;font-weight:600;">ВИЗИТОВ В АПП</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+    // По заведениям
+    html += '<div style="font-size:12px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;">По заведениям</div>';
+
+    if (sorted.length === 0) {
+      html += '<div style="text-align:center;padding:30px;color:var(--ink3);font-size:13px;">Просмотров пока нет</div>';
+    } else {
+      const maxViews = sorted[0].total;
+      sorted.forEach((s, i) => {
+        const place = allViews.find(p=>p.id===s.id);
+        const name = place ? place.name : 'ID '+s.id;
+        const emoji = place ? place.emoji : '🍽️';
+        const pct = Math.round(s.total / maxViews * 100);
+        html += '<div style="background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px;">' +
+          '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
+            '<div style="font-size:24px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border-radius:10px;">' + emoji + '</div>' +
+            '<div style="flex:1;">' +
+              '<div style="font-size:14px;font-weight:800;">' + (i===0?'🏆 ':'') + name + '</div>' +
+              '<div style="font-size:11px;color:var(--ink3);margin-top:1px;">' + s.total + ' просм · ' + s.uniq + ' уник.</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;">' +
+            '<div style="height:100%;width:' + pct + '%;background:var(--forest);border-radius:3px;transition:width .5s;"></div>' +
+          '</div>' +
+        '</div>';
+      });
+    }
+
+    html += '</div>';
+    document.getElementById('admin-list').innerHTML = html;
+  } catch(e) {
+    document.getElementById('admin-list').innerHTML = '<div class="admin-empty"><div class="admin-empty-ico">⚠️</div><div class="admin-empty-title">Ошибка</div><div class="admin-empty-desc">' + e.message + '</div></div>';
+  }
 }
 
 

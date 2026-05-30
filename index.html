@@ -1043,6 +1043,22 @@ async function deletePlace(id) {
 // ══════════════════════════════════════════
 // EDIT SHEET
 // ══════════════════════════════════════════
+function onTierChange(tier) {
+  const featuredBox = document.getElementById('ef-featured');
+  const featuredLabel = featuredBox ? featuredBox.closest('label') : null;
+  if (!featuredBox) return;
+  if (tier === 'top') {
+    featuredBox.disabled = false;
+    featuredBox.style.opacity = '1';
+    if (featuredLabel) featuredLabel.style.opacity = '1';
+  } else {
+    featuredBox.disabled = true;
+    featuredBox.checked = false;
+    featuredBox.style.opacity = '0.4';
+    if (featuredLabel) featuredLabel.style.opacity = '0.5';
+  }
+}
+
 function openEditPlace(id) {
   const p = adminPlaces.find(x=>x.id===id); if(!p) return;
   editingId=id; editingTable='halal_places';
@@ -1058,7 +1074,7 @@ function openEditPlace(id) {
     '<div class="form-group"><label class="form-label">Описание</label><textarea class="form-input" id="ef-description">'+(p.description||'')+'</textarea></div>' +
     '<div class="form-group"><label class="form-label">Соцсети</label><input class="form-input" id="ef-social" value="'+(p.social||'')+'"></div>' +
     '<div class="form-group"><label class="form-label">Акция/промо</label><input class="form-input" id="ef-promo" value="'+(p.promo||'')+'" placeholder="🎵 Живая музыка"></div>' +
-    '<div class="form-group"><label class="form-label">Тариф</label><select class="form-select" id="ef-tier"><option value="starter" '+(p.tier==='starter'?'selected':'')+'>🌱 Старт (490₽)</option><option value="top" '+(p.tier==='top'?'selected':'')+'>👑 Топ (990₽)</option></select></div>' +
+    '<div class="form-group"><label class="form-label">Тариф</label><select class="form-select" id="ef-tier" onchange="onTierChange(this.value)"><option value="starter" '+(p.tier==='starter'?'selected':'')+'>🌱 Старт (490₽)</option><option value="top" '+(p.tier==='top'?'selected':'')+'>👑 Топ (990₽)</option></select></div>' +
     '<div class="form-group"><label class="form-label">Подписка до</label><input class="form-input" type="date" id="ef-sub-until" value="'+subVal+'"></div>' +
     '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-paid" '+(p.paid?'checked':'')+' style="width:16px;height:16px;"> Оплачено</label></div>' +
     '<div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="ef-verified" '+(p.verified?'checked':'')+' style="width:16px;height:16px;"> Верифицировано</label></div>' +

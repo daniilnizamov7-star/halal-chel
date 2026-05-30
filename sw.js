@@ -1,4 +1,4 @@
-const CACHE = 'halal-chel-v2';
+const CACHE = 'halal-chel-v1';
 const STATIC = [
   '/',
   '/index.html',

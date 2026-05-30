@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Халяль Чел — Каталог заведений Челябинска</title>
 <meta name="theme-color" content="#1a4d2e">
-<meta name="description" content="Лучший гид по халяль-заведениям Челябинска. Рестораны, кафе, шаурма — только проверенное вами.">
+<meta name="description" content="Лучший гид по халяль-заведениям Челябинска. Рестораны, кафе, шаурма — только проверенное.">
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -382,7 +382,7 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
     <div class="header-top">
       <div class="brand" id="brand-logo">
         <div class="brand-mark"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
-        <div class="brand-text"><div class="brand-name">Халяль Чел</div><div class="brand-sub">Только проверенное вами</div></div>
+        <div class="brand-text"><div class="brand-name">Халяль Чел</div><div class="brand-sub">Только проверенное</div></div>
       </div>
       <div class="city-pill"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Челябинск</div>
     </div>
@@ -523,9 +523,11 @@ textarea.form-input{resize:vertical;min-height:90px;line-height:1.6;}
     <div class="admin-tabs">
       <div class="admin-tab active" data-tab="apps" onclick="setAdminTab('apps')">Заявки<span id="badge-new" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
       <div class="admin-tab" data-tab="stats" onclick="setAdminTab('stats')">📊 Стат</div>
+      <div class="admin-tab" data-tab="feedback" onclick="setAdminTab('feedback')">💬<span id="badge-feedback" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
       <div class="admin-tab" data-tab="places" onclick="setAdminTab('places')">Заведения</div>
       <div class="admin-tab" data-tab="reviews" onclick="setAdminTab('reviews')">Отзывы<span id="badge-reviews" style="display:none;margin-left:3px;background:var(--red);color:#fff;border-radius:6px;padding:0 5px;font-size:9px;"></span></div>
       <div class="admin-tab" data-tab="stats" onclick="setAdminTab('stats')">📊 Стат</div>
+      
     </div>
     <div class="admin-scroll" id="admin-list"></div>
     <div class="pb-safe"></div>
@@ -706,7 +708,7 @@ function renderList() {
           </div>
           <div class="lc-meta">${p.category}${p.promo ? ' · ' + p.promo : ''}</div>
           <div class="chips"><span class="chip ch-halal">☪ Халяль</span>${openChip(p.hours)}</div>
-          ${pct !== null ? `<div class="vote-bar" onclick="event.stopPropagation();">
+          ${pct !== null ? `<div class="vote-bar" onclick="event.stopPropagation();" title="Нажмите повторно чтобы отменить">
             <button class="vote-btn ${myVote==='up'?'voted-up':''}" onclick="castVote(${p.id},'up',event)">👍 ${p.votes_up||0}</button>
             <div class="vote-pct"><div class="vote-pct-fill" style="width:${pct}%"></div></div>
             <button class="vote-btn ${myVote==='down'?'voted-down':''}" onclick="castVote(${p.id},'down',event)">👎 ${p.votes_down||0}</button>
@@ -725,7 +727,8 @@ async function castVote(placeId, vote, e) {
   const place = places.find(p=>p.id===placeId);
   if (!place) return;
   const prev = myVotes[placeId];
-  if (prev === vote) return; // уже голосовал так
+  // Если тот же голос — убираем (отмена голоса)
+  // Если другой голос — меняем
 
   try {
     // Upsert голоса
@@ -736,6 +739,18 @@ async function castVote(placeId, vote, e) {
     // Пересчитать счётчики
     if (prev==='up') place.votes_up = Math.max(0,(place.votes_up||1)-1);
     if (prev==='down') place.votes_down = Math.max(0,(place.votes_down||1)-1);
+    if (prev === vote) {
+      // Отмена голоса — удаляем запись
+      delete myVotes[placeId];
+      localStorage.setItem('hc_votes', JSON.stringify(myVotes));
+      // Удалить из БД
+      try { await sb('halal_votes?place_id=eq.'+placeId+'&voter_key=eq.'+voterKey, {method:'DELETE',prefer:'return=minimal'}); } catch{}
+      await sb('halal_places?id=eq.'+placeId,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({votes_up:place.votes_up,votes_down:place.votes_down})});
+      renderList();
+      if(currentDetailId===placeId) openDetail(placeId);
+      showToast('Голос отменён','↩️');
+      return;
+    }
     if (vote==='up') place.votes_up = (place.votes_up||0)+1;
     if (vote==='down') place.votes_down = (place.votes_down||0)+1;
     myVotes[placeId] = vote;
@@ -776,12 +791,13 @@ function openDetail(id) {
     <div class="det-sec-label">Контакты</div>
     <div class="det-contacts">
       <a class="det-row" href="tel:${p.phone}"><div class="det-ico ico-g"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6z"/></svg></div><div><div class="det-row-label">Телефон</div><div class="det-row-val">${p.phone}</div></div></a>
-      <div class="det-row" onclick="window.open('https://2gis.ru/chelyabinsk/search/'+encodeURIComponent(p.address),'_blank')"><div class="det-ico ico-b"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="det-row-label">Адрес</div><div class="det-row-val">${p.address}</div></div></div>
+      <div class="det-row" onclick="window.open('https://2gis.ru/chelyabinsk/search/'+encodeURIComponent(p.address+', Челябинск'),'_blank')"><div class="det-ico ico-b"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="det-row-label">Адрес</div><div class="det-row-val">${p.address}</div></div></div>
       ${p.hours?`<div class="det-row"><div class="det-ico ico-g"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="det-row-label">Работает</div><div class="det-row-val">${p.hours==='00:00–23:59'?'Круглосуточно':p.hours}</div></div></div>`:''}
       ${p.social?`<div class="det-row" onclick="window.open('https://instagram.com/${p.social.replace('@','')}','_blank')"><div class="det-ico ico-gold"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div><div><div class="det-row-label">Instagram</div><div class="det-row-val">${p.social}</div></div></div>`:''}
     </div>
     <div class="detail-vote">
       <div class="detail-vote-title">Вы бы порекомендовали это место?</div>
+      ${myVote ? '<div style="font-size:11px;color:var(--ink3);text-align:center;margin-bottom:10px;margin-top:-4px;">Нажмите повторно чтобы отменить голос</div>' : ''}
       <div class="detail-vote-btns">
         <div class="dvote-btn ${myVote==='up'?'voted-up':''}" onclick="castVote(${p.id},'up')">
           <div class="dvote-ico">👍</div>
@@ -800,7 +816,7 @@ function openDetail(id) {
     </button>
     <div class="det-actions">
       <a class="btn-call" href="tel:${p.phone}"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6z"/></svg>Позвонить</a>
-      <a class="btn-map" href="#" onclick="event.preventDefault();window.open('https://2gis.ru/chelyabinsk/search/'+encodeURIComponent(p.address),'_blank')"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>На карте</a>
+      <a class="btn-map" href="#" onclick="event.preventDefault();window.open('https://2gis.ru/chelyabinsk/search/'+encodeURIComponent(p.address+', Челябинск'),'_blank')"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>На карте</a>
     </div>`;
   document.getElementById('screen-detail').classList.add('open');
   history.pushState({},'','');
@@ -925,10 +941,10 @@ function checkAdminPw() {
 function setAdminTab(tab) {
   adminTab=tab;
   document.querySelectorAll('.admin-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
-  document.getElementById('admin-panel-title').textContent = tab==='apps'?'Заявки':tab==='places'?'Заведения':tab==='reviews'?'Отзывы и жалобы':'Статистика';
+  document.getElementById('admin-panel-title').textContent = tab==='apps'?'Заявки':tab==='places'?'Заведения':tab==='reviews'?'Отзывы и жалобы':tab==='stats'?'Статистика':'Обратная связь';
   reloadAdminTab();
 }
-function reloadAdminTab() { adminTab==='apps'?loadAdminApps():adminTab==='places'?loadAdminPlaces():adminTab==='reviews'?loadAdminReviews():loadAdminStats(); }
+function reloadAdminTab() { adminTab==='apps'?loadAdminApps():adminTab==='places'?loadAdminPlaces():adminTab==='reviews'?loadAdminReviews():adminTab==='stats'?loadAdminStats():loadAdminFeedback(); }
 
 // ── ЗАЯВКИ ──
 let appsFilter='new';
@@ -1267,6 +1283,7 @@ if ('serviceWorker' in navigator) {
 // BACK BUTTON
 // ══════════════════════════════════════════
 window.addEventListener('popstate',()=>{
+  if(document.getElementById('feedback-overlay').classList.contains('open')){closeFeedback();return;}
   if(document.getElementById('review-overlay').classList.contains('open')){closeReview();return;}
   if(document.getElementById('edit-overlay').classList.contains('open')){closeEdit();return;}
   if(document.getElementById('screen-admin').classList.contains('open')){closeAdmin();return;}
@@ -1579,6 +1596,91 @@ async function loadAdminStats() {
 }
 
 
+// ══════════════════════════════════════════
+// ОБРАТНАЯ СВЯЗЬ
+// ══════════════════════════════════════════
+function openFeedback() {
+  document.getElementById('fb-name').value = '';
+  document.getElementById('fb-message').value = '';
+  document.getElementById('fb-char').textContent = '0 / 500';
+  document.getElementById('fb-btn').textContent = 'Отправить';
+  document.getElementById('fb-btn').disabled = false;
+  document.getElementById('feedback-overlay').classList.add('open');
+  history.pushState({}, '', '');
+  document.getElementById('fb-message').oninput = function() {
+    document.getElementById('fb-char').textContent = this.value.length + ' / 500';
+  };
+}
+
+function closeFeedback() {
+  document.getElementById('feedback-overlay').classList.remove('open');
+}
+
+async function submitFeedback() {
+  const message = document.getElementById('fb-message').value.trim();
+  if (!message) { showToast('Напишите сообщение', '⚠️'); return; }
+  const btn = document.getElementById('fb-btn');
+  btn.textContent = 'Отправляем…'; btn.disabled = true;
+  try {
+    await sb('halal_feedback', {
+      method: 'POST', prefer: 'return=minimal',
+      body: JSON.stringify({
+        name: document.getElementById('fb-name').value.trim() || null,
+        message
+      })
+    });
+    btn.textContent = '✓ Отправлено!';
+    showToast('Спасибо! Прочитаем и учтём 🙏', '✅');
+    setTimeout(() => closeFeedback(), 1500);
+  } catch(e) {
+    btn.textContent = 'Отправить'; btn.disabled = false;
+    showToast('Ошибка. Попробуйте ещё раз', '⚠️');
+  }
+}
+
+// ── ОБРАТНАЯ СВЯЗЬ В АДМИНКЕ ──
+async function loadAdminFeedback() {
+  document.getElementById('admin-list').innerHTML = '<div class="loader"><div class="loader-spin"></div><div class="loader-text">Загружаем…</div></div>';
+  try {
+    const feedback = await sb('halal_feedback?order=created_at.desc');
+    const newCount = feedback.filter(f => f.status === 'new').length;
+    document.getElementById('admin-stats-label').textContent = 'Всего: ' + feedback.length + ' · Новых: ' + newCount;
+    const badge = document.getElementById('badge-feedback');
+    if (badge) { if(newCount>0){badge.style.display='inline';badge.textContent=newCount;}else badge.style.display='none'; }
+    if (!feedback.length) {
+      document.getElementById('admin-list').innerHTML = '<div class="admin-empty"><div class="admin-empty-ico">💬</div><div class="admin-empty-title">Отзывов нет</div><div class="admin-empty-desc">Здесь появятся сообщения от пользователей</div></div>';
+      return;
+    }
+    document.getElementById('admin-list').innerHTML = feedback.map(f => {
+      const d = new Date(f.created_at).toLocaleDateString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+      return '<div class="app-card" style="' + (f.status==='new'?'border-color:var(--forest-md);':'') + '">' +
+        '<div class="app-card-head">' +
+          '<div>' +
+            '<div class="app-card-name">' + (f.name || 'Аноним') + '</div>' +
+            '<div class="app-card-cat">' + d + '</div>' +
+          '</div>' +
+          '<div class="app-status ' + (f.status==='new'?'st-new':'st-approved') + '">' + (f.status==='new'?'Новое':'Прочитано') + '</div>' +
+        '</div>' +
+        '<div class="app-card-body"><div class="app-row"><span class="app-row-val" style="font-size:13px;line-height:1.6;">' + f.message + '</span></div></div>' +
+        '<div class="app-actions">' +
+          (f.status==='new' ? '<button class="app-btn btn-approve" onclick="markFeedbackRead(' + f.id + ')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Прочитано</button>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('') + '<div style="height:20px;"></div>';
+  } catch(e) {
+    document.getElementById('admin-list').innerHTML = '<div class="admin-empty"><div class="admin-empty-ico">⚠️</div><div class="admin-empty-title">Ошибка</div><div class="admin-empty-desc">' + e.message + '</div></div>';
+  }
+}
+
+async function markFeedbackRead(id) {
+  try {
+    await sb('halal_feedback?id=eq.'+id, {method:'PATCH',prefer:'return=minimal',body:JSON.stringify({status:'read'})});
+    loadAdminFeedback();
+    showToast('Отмечено как прочитанное', '✅');
+  } catch(e) { showToast('Ошибка','⚠️'); }
+}
+
+
 init();
 </script>
 <!-- ════ QR МОДАЛКА ════ -->
@@ -1637,6 +1739,28 @@ init();
         <button class="review-btn review-btn-skip" onclick="closeReview()">Отмена</button>
         <button class="review-btn review-btn-send" style="background:var(--red);" onclick="submitComplaint()">Отправить жалобу</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div class="edit-overlay" id="feedback-overlay" onclick="if(event.target===this)closeFeedback()">
+  <div class="edit-sheet">
+    <div class="edit-handle"></div>
+    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:6px;">Напишите нам</div>
+    <div style="font-size:13px;color:var(--ink2);margin-bottom:18px;line-height:1.6;">Идеи, пожелания, замечания — всё важно. Читаем каждое сообщение и стараемся улучшить приложение.</div>
+    <div class="form-group">
+      <label class="form-label">Ваше имя <span style="color:var(--ink3);font-weight:500;">(необязательно)</span></label>
+      <input class="form-input" type="text" id="fb-name" placeholder="Как вас зовут?">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Сообщение *</label>
+      <textarea class="form-input" id="fb-message" placeholder="Напишите что думаете о приложении, чего не хватает, что понравилось…" style="min-height:120px;resize:none;" maxlength="500"></textarea>
+      <div style="font-size:11px;color:var(--ink3);text-align:right;margin-top:4px;" id="fb-char">0 / 500</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button onclick="closeFeedback()" style="flex:1;background:var(--bg3);color:var(--ink2);border:none;border-radius:12px;padding:13px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;cursor:pointer;">Отмена</button>
+      <button onclick="submitFeedback()" id="fb-btn" style="flex:1;background:var(--forest);color:#fff;border:none;border-radius:12px;padding:13px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 3px 12px rgba(26,77,46,.25);">Отправить</button>
     </div>
   </div>
 </div>
